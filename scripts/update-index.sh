@@ -66,7 +66,7 @@ READY_COUNT=$(count_files "$TASKSUPERSTAR_DIR/ready")
         for file in "$TASKSUPERSTAR_DIR/drafts"/*.md; do
             if [ -f "$file" ]; then
                 NAME=$(basename "$file" .md)
-                PRIORITY=$(grep "^\*\*Priority:\*\*" "$file" | sed 's/.*: //' || echo "medium")
+                PRIORITY=$(grep "^\*\*Priority:\*\*" "$file" | sed 's/^\*\*Priority:\*\* //' || echo "medium")
                 echo "- [ ] $NAME [$PRIORITY]"
             fi
         done
@@ -82,8 +82,8 @@ READY_COUNT=$(count_files "$TASKSUPERSTAR_DIR/ready")
         for file in "$TASKSUPERSTAR_DIR/ready"/*.md; do
             if [ -f "$file" ]; then
                 NAME=$(basename "$file" .md)
-                PRIORITY=$(grep "^\*\*Priority:\*\*" "$file" | sed 's/.*: //' || echo "high")
-                EFFORT=$(grep "^\*\*Estimated Effort:\*\*" "$file" | sed 's/.*: //' || echo "-")
+                PRIORITY=$(grep "^\*\*Priority:\*\*" "$file" | sed 's/^\*\*Priority:\*\* //' || echo "high")
+                EFFORT=$(grep "^\*\*Estimated Effort:\*\*" "$file" | sed 's/^\*\*Estimated Effort:\*\* //' || echo "-")
                 echo "- [ ] $NAME [$PRIORITY, $EFFORT]"
             fi
         done

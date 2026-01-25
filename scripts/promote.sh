@@ -88,8 +88,8 @@ elif [ -f "$DRAFT_FILE" ]; then
     PROBLEM=$(grep -A 20 "## Problem" "$DRAFT_FILE" | tail -n +2 | head -10 | grep -v "^##" || echo "")
     SOLUTION=$(grep -A 20 "## Proposed Solution" "$DRAFT_FILE" | tail -n +2 | head -10 | grep -v "^##" || echo "")
     REQUIREMENTS=$(grep -A 20 "## Requirements" "$DRAFT_FILE" | tail -n +2 | head -10 | grep -v "^##" || echo "")
-    PRIORITY=$(grep "^\*\*Priority:\*\*" "$DRAFT_FILE" | sed 's/.*: //' || echo "high")
-    CATEGORY=$(grep "^\*\*Category:\*\*" "$DRAFT_FILE" | sed 's/.*: //' || echo "feature")
+    PRIORITY=$(grep "^\*\*Priority:\*\*" "$DRAFT_FILE" | sed 's/^\*\*Priority:\*\* //' || echo "high")
+    CATEGORY=$(grep "^\*\*Category:\*\*" "$DRAFT_FILE" | sed 's/^\*\*Category:\*\* //' || echo "feature")
 
     # Create ready PRD
     cat > "$READY_FILE" << EOF

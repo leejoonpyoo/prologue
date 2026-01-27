@@ -29,10 +29,10 @@ count_files() {
 # Count projects
 PROJECT_COUNT=0
 if [ -d "$TASKSUPERSTAR_DIR" ]; then
-    PROJECT_COUNT=$(find "$TASKSUPERSTAR_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "inbox" -not -name "archive" 2>/dev/null | wc -l | tr -d ' ')
+    PROJECT_COUNT=$(find "$TASKSUPERSTAR_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "_inbox" -not -name "_archive" 2>/dev/null | wc -l | tr -d ' ')
 fi
 
-INBOX_COUNT=$(count_files "$TASKSUPERSTAR_DIR/inbox")
+INBOX_COUNT=$(count_files "$TASKSUPERSTAR_DIR/_inbox")
 
 # Generate index content
 {
@@ -48,7 +48,7 @@ INBOX_COUNT=$(count_files "$TASKSUPERSTAR_DIR/inbox")
         echo "_No projects yet. Create one with \`/tasksuperstar new <project-name>\`_"
     else
         for project_dir in "$TASKSUPERSTAR_DIR"/*/; do
-            if [ -d "$project_dir" ] && [ "$(basename "$project_dir")" != "inbox" ] && [ "$(basename "$project_dir")" != "archive" ]; then
+            if [ -d "$project_dir" ] && [ "$(basename "$project_dir")" != "_inbox" ] && [ "$(basename "$project_dir")" != "_archive" ]; then
                 PROJECT_NAME=$(basename "$project_dir")
                 MASTER_FILE="$project_dir/_master.md"
 
@@ -88,7 +88,7 @@ INBOX_COUNT=$(count_files "$TASKSUPERSTAR_DIR/inbox")
     if [ "$INBOX_COUNT" -eq 0 ]; then
         echo "_No ideas yet. Create one with \`/tasksuperstar inbox <name>\`_"
     else
-        for file in "$TASKSUPERSTAR_DIR/inbox"/*.md; do
+        for file in "$TASKSUPERSTAR_DIR/_inbox"/*.md; do
             if [ -f "$file" ]; then
                 NAME=$(basename "$file" .md)
                 WHAT=$(grep -A 5 "## What" "$file" | tail -n +2 | head -1 | sed 's/^\[//' | sed 's/\]$//' | head -c 50 || echo "")
@@ -105,7 +105,7 @@ INBOX_COUNT=$(count_files "$TASKSUPERSTAR_DIR/inbox")
     # Recent archives
     echo "## Recently Archived"
     echo ""
-    ARCHIVES=($(find "$TASKSUPERSTAR_DIR/archive" -maxdepth 1 -name "*.md" -type f 2>/dev/null | sort -r | head -5))
+    ARCHIVES=($(find "$TASKSUPERSTAR_DIR/_archive" -maxdepth 1 -name "*.md" -type f 2>/dev/null | sort -r | head -5))
     if [ ${#ARCHIVES[@]} -eq 0 ]; then
         echo "_No archived items yet._"
     else

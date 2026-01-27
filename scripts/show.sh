@@ -19,8 +19,8 @@ TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
 PROJECT_DIR="$TASKSUPERSTAR_DIR/$PROJECT_NAME"
 
 # Check if it's an inbox item
-if [ -f "$TASKSUPERSTAR_DIR/inbox/$PROJECT_NAME.md" ]; then
-    cat "$TASKSUPERSTAR_DIR/inbox/$PROJECT_NAME.md"
+if [ -f "$TASKSUPERSTAR_DIR/_inbox/$PROJECT_NAME.md" ]; then
+    cat "$TASKSUPERSTAR_DIR/_inbox/$PROJECT_NAME.md"
     exit 0
 fi
 

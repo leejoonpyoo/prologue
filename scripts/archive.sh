@@ -22,12 +22,12 @@ fi
 
 TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
 PROJECT_DIR="$TASKSUPERSTAR_DIR/$PROJECT_NAME"
-ARCHIVE_DIR="$TASKSUPERSTAR_DIR/archive"
+ARCHIVE_DIR="$TASKSUPERSTAR_DIR/_archive"
 
 # Check inbox first
-if [ -f "$TASKSUPERSTAR_DIR/inbox/$PROJECT_NAME.md" ]; then
+if [ -f "$TASKSUPERSTAR_DIR/_inbox/$PROJECT_NAME.md" ]; then
     mkdir -p "$ARCHIVE_DIR"
-    mv "$TASKSUPERSTAR_DIR/inbox/$PROJECT_NAME.md" "$ARCHIVE_DIR/${TIMESTAMP}_${PROJECT_NAME}.md"
+    mv "$TASKSUPERSTAR_DIR/_inbox/$PROJECT_NAME.md" "$ARCHIVE_DIR/${TIMESTAMP}_${PROJECT_NAME}.md"
     echo -e "${GREEN}Archived inbox idea: $PROJECT_NAME${NC}"
     "$SCRIPT_DIR/update-index.sh" "$PROJECT_ROOT"
     exit 0

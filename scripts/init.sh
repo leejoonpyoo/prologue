@@ -33,8 +33,8 @@ fi
 echo -e "${BLUE}Initializing TaskSuperstar v2.0...${NC}"
 
 # Create folder structure (v2)
-mkdir -p "$TASKSUPERSTAR_DIR/inbox"
-mkdir -p "$TASKSUPERSTAR_DIR/archive"
+mkdir -p "$TASKSUPERSTAR_DIR/_inbox"
+mkdir -p "$TASKSUPERSTAR_DIR/_archive"
 
 # Create index.md from template
 sed "s/\${TIMESTAMP}/$TIMESTAMP/g" "$TEMPLATE_DIR/index.md" > "$TASKSUPERSTAR_DIR/index.md"
@@ -44,9 +44,9 @@ echo -e "${GREEN}TaskSuperstar v2.0 initialized!${NC}"
 echo ""
 echo "Structure:"
 echo "  $TASKSUPERSTAR_DIR/"
+echo "  ├── _inbox/       # Quick ideas"
+echo "  ├── _archive/     # Completed projects"
 echo "  ├── {projects}/   # Create with /tasksuperstar new <name>"
-echo "  ├── inbox/        # Quick ideas"
-echo "  ├── archive/      # Completed projects"
 echo "  └── index.md      # Master index"
 echo ""
 echo "Commands:"

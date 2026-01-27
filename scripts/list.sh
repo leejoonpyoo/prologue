@@ -56,7 +56,7 @@ else
     echo ""
 
     for project_dir in "$TASKSUPERSTAR_DIR"/*/; do
-        if [ -d "$project_dir" ] && [ "$(basename "$project_dir")" != "inbox" ] && [ "$(basename "$project_dir")" != "archive" ]; then
+        if [ -d "$project_dir" ] && [ "$(basename "$project_dir")" != "_inbox" ] && [ "$(basename "$project_dir")" != "_archive" ]; then
             PROJECT=$(basename "$project_dir")
             PHASE_COUNT=$(ls -1 "$project_dir"/phase-*.md 2>/dev/null | wc -l | tr -d ' ')
 
@@ -74,7 +74,7 @@ else
     echo -e "${BLUE}=== Inbox ===${NC}"
     echo ""
 
-    INBOX_DIR="$TASKSUPERSTAR_DIR/inbox"
+    INBOX_DIR="$TASKSUPERSTAR_DIR/_inbox"
     if [ -d "$INBOX_DIR" ]; then
         for idea in "$INBOX_DIR"/*.md; do
             if [ -f "$idea" ]; then

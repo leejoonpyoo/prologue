@@ -20,7 +20,7 @@ if [ -z "$NAME" ]; then
 fi
 
 TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
-INBOX_DIR="$TASKSUPERSTAR_DIR/inbox"
+INBOX_DIR="$TASKSUPERSTAR_DIR/_inbox"
 
 mkdir -p "$INBOX_DIR"
 

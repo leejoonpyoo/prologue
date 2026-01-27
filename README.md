@@ -119,11 +119,11 @@ Edit the generated files with your planning details. Each phase PRD includes a "
 
 ```
 .tasksuperstar/
+├── _inbox/                     # Standalone ideas (system folder)
+├── _archive/                   # Completed projects (system folder)
 ├── {project-name}/
 │   ├── _master.md              # Project master plan (vision, scope)
 │   └── phase-XX-xxx.md         # Phases added incrementally
-├── inbox/                      # Standalone ideas
-├── archive/                    # Completed projects
 └── index.md                    # Master index
 ```
 

@@ -55,11 +55,11 @@ _master.md (전체 비전)
 
 ```
 .tasksuperstar/
+├── _inbox/                     # Standalone ideas (system folder)
+├── _archive/                   # Completed projects (system folder)
 ├── {project-name}/
 │   ├── _master.md              # Project master plan (vision, scope)
 │   └── phase-01-xxx.md         # Add phases as needed
-├── inbox/                      # Standalone ideas
-├── archive/                    # Completed projects
 └── index.md                    # Master index
 ```
 

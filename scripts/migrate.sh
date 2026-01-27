@@ -33,7 +33,7 @@ echo -e "${BLUE}Migrating TaskSuperstar v1 → v2${NC}"
 echo ""
 
 # Create new structure
-mkdir -p "$TASKSUPERSTAR_DIR/inbox"
+mkdir -p "$TASKSUPERSTAR_DIR/_inbox"
 
 # Count items to migrate
 IDEAS_COUNT=$(ls -1 "$TASKSUPERSTAR_DIR/ideas/"*.md 2>/dev/null | wc -l | tr -d ' ')
@@ -52,8 +52,8 @@ if [ -d "$TASKSUPERSTAR_DIR/ideas" ]; then
     for file in "$TASKSUPERSTAR_DIR/ideas/"*.md; do
         if [ -f "$file" ]; then
             BASENAME=$(basename "$file")
-            mv "$file" "$TASKSUPERSTAR_DIR/inbox/$BASENAME"
-            echo "  → inbox/$BASENAME"
+            mv "$file" "$TASKSUPERSTAR_DIR/_inbox/$BASENAME"
+            echo "  → _inbox/$BASENAME"
         fi
     done
     rmdir "$TASKSUPERSTAR_DIR/ideas" 2>/dev/null || true

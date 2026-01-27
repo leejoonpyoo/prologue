@@ -35,19 +35,31 @@ TaskSuperstar is a **hierarchical PRD (Product Requirements Document) library** 
 | `/tasksuperstar archive <project>` | Archive completed project |
 | `/tasksuperstar search <query>` | Search all PRDs |
 
+## Key Concept: Phases
+
+**Phases are independent work units, NOT refinement stages.**
+
+- All phases have the same level of detail (fully executable PRDs)
+- Phase numbers indicate execution order/priority, not maturity
+- Each phase = one Prometheus run
+- Add phases incrementally as you plan, not all upfront
+
+```
+_master.md (전체 비전)
+    ├── phase-01 (작업1) ─→ /prometheus ─→ 실행
+    ├── phase-02 (작업2) ─→ /prometheus ─→ 실행
+    └── phase-03 (작업3) ─→ /prometheus ─→ 실행
+```
+
 ## Folder Structure
 
 ```
 .tasksuperstar/
 ├── {project-name}/
-│   ├── _master.md              # Project master plan
-│   ├── phase-01-foundation.md  # Phase 1 PRD
-│   ├── phase-02-core.md        # Phase 2 PRD
-│   └── phase-03-api.md         # Phase 3 PRD
+│   ├── _master.md              # Project master plan (vision, scope)
+│   └── phase-01-xxx.md         # Add phases as needed
 ├── inbox/                      # Standalone ideas
-│   └── some-idea.md
 ├── archive/                    # Completed projects
-│   └── YYYY-MM-DD_{project}/
 └── index.md                    # Master index
 ```
 
@@ -180,31 +192,26 @@ planned → ready → in-progress → done
 ## Workflow Example
 
 ```bash
-# 1. Create project
+# 1. Create project (starts with _master.md only)
 /tasksuperstar new ba-platform
+# → Edit _master.md with vision, scope, success criteria
 
-# 2. Add phases
+# 2. Add first phase when ready to plan it
 /tasksuperstar add ba-platform foundation
-/tasksuperstar add ba-platform core-engine
-/tasksuperstar add ba-platform api-layer
+# → Edit phase-01-foundation.md with detailed requirements
 
-# 3. Write PRDs (edit the files)
-# Edit .tasksuperstar/ba-platform/_master.md
-# Edit .tasksuperstar/ba-platform/phase-01-foundation.md
-
-# 4. Mark ready when complete
+# 3. Mark ready and execute
 /tasksuperstar status ba-platform foundation ready
-
-# 5. Execute with Prometheus
 /tasksuperstar run ba-platform foundation
-# This displays the phase PRD for easy copy/paste to /prometheus
+/prometheus  # Execute with Prometheus
 
-/prometheus
-# Use the PRD content
-
-# 6. Mark done when complete
+# 4. Complete and add next phase
 /tasksuperstar status ba-platform foundation done
+/tasksuperstar add ba-platform core-engine  # Add next phase when needed
+# → Repeat cycle
 ```
+
+**Incremental approach**: Don't plan all phases upfront. Add each phase as the previous one completes or when you're ready to detail it.
 
 ## Integration with Sisyphus
 

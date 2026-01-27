@@ -14,11 +14,19 @@ Part of the **Sisyphus Multi-Agent System**.
 
 ### Key Features
 
-- **Project-Based Organization**: Master plan + multiple phase PRDs
-- **Phase Management**: Break complex projects into executable chunks
+- **Project-Based Organization**: Master plan + phase PRDs
+- **Incremental Phase Management**: Add phases as you go, not all upfront
+- **Independent Work Units**: Each phase = one executable Prometheus task
 - **Status Tracking**: planned → ready → in-progress → done
 - **Prometheus Integration**: Ready phases feed directly into Prometheus
 - **Inbox for Quick Ideas**: Capture standalone ideas outside projects
+
+### Key Concept: Phases ≠ Maturity Levels
+
+Phases are **independent work units**, not refinement stages:
+- All phases have the same level of detail
+- Phase numbers = execution order/priority
+- Add phases incrementally as you plan
 
 ## Installation
 
@@ -55,18 +63,16 @@ This creates:
 - `.tasksuperstar/ba-platform/_master.md` (master plan)
 - Updates `.tasksuperstar/index.md`
 
-### 2. Add Phases
+### 2. Add First Phase (when ready to detail it)
 
 ```bash
 /tasksuperstar add ba-platform foundation
-/tasksuperstar add ba-platform core-engine
-/tasksuperstar add ba-platform api-layer
 ```
 
 This creates:
 - `.tasksuperstar/ba-platform/phase-01-foundation.md`
-- `.tasksuperstar/ba-platform/phase-02-core-engine.md`
-- `.tasksuperstar/ba-platform/phase-03-api-layer.md`
+
+**Note**: Add phases incrementally. Don't plan all phases upfront.
 
 ### 3. Write Your PRDs
 
@@ -114,14 +120,10 @@ Edit the generated files with your planning details. Each phase PRD includes a "
 ```
 .tasksuperstar/
 ├── {project-name}/
-│   ├── _master.md              # Project master plan
-│   ├── phase-01-foundation.md  # Phase 1 PRD
-│   ├── phase-02-core.md        # Phase 2 PRD
-│   └── phase-03-api.md         # Phase 3 PRD
+│   ├── _master.md              # Project master plan (vision, scope)
+│   └── phase-XX-xxx.md         # Phases added incrementally
 ├── inbox/                      # Standalone ideas
-│   └── some-idea.md
 ├── archive/                    # Completed projects
-│   └── YYYY-MM-DD_{project}/
 └── index.md                    # Master index
 ```
 
@@ -186,33 +188,28 @@ Archive
     └── .sisyphus/archive/YYYY-MM-DD_{task}/
 ```
 
-## Example: Multi-Phase Project
+## Example: Incremental Project Development
 
 ```bash
-# Planning phase
+# 1. Start project with master plan only
 /tasksuperstar new ecommerce-platform
+# → Edit _master.md: vision, overall scope, success criteria
 
-# Add phases
+# 2. Plan and execute first phase
 /tasksuperstar add ecommerce-platform user-auth
-/tasksuperstar add ecommerce-platform product-catalog
-/tasksuperstar add ecommerce-platform shopping-cart
-/tasksuperstar add ecommerce-platform payment-integration
-
-# Edit PRDs
-# ... write detailed requirements in each phase file ...
-
-# Mark first phase ready
+# → Edit phase-01-user-auth.md with detailed requirements
 /tasksuperstar status ecommerce-platform user-auth ready
-
-# Execute phase 1
 /tasksuperstar run ecommerce-platform user-auth
-/prometheus
-# ... execute with Prometheus ...
+/prometheus  # Execute
 
-# Mark done, move to next phase
+# 3. Complete first phase, add next
 /tasksuperstar status ecommerce-platform user-auth done
-/tasksuperstar status ecommerce-platform product-catalog ready
+/tasksuperstar add ecommerce-platform product-catalog
+# → Edit phase-02-product-catalog.md
+# → Repeat cycle...
 ```
+
+**Why incremental?** Requirements evolve. Earlier phases inform later ones. Plan each phase when you're ready to execute it.
 
 ## Example: Quick Idea Capture
 

@@ -2,227 +2,265 @@
 
 name: tasksuperstar
 description: PRD library and brainstorming storage - save ideas before execution
-version: 1.0.0
+version: 2.0.0
 author: leejoonpyoo
 
 ## Overview
 
-TaskSuperstar is a **lightweight PRD (Product Requirements Document) library** for brainstorming and storing ideas before execution. Unlike Prometheus (which plans for immediate execution), TaskSuperstar stores ideas for future reference.
+TaskSuperstar is a **hierarchical PRD (Product Requirements Document) library** for planning before execution. It manages project master plans and phase-based PRDs that feed into Prometheus for implementation.
 
 ```
-Idea → Draft → Ready → (later) /prometheus → Execute
+[Project Master Plan] → [Phase PRDs] → /prometheus → Execute
 ```
 
 ## When to Use
 
-- Brainstorming ideas you want to save for later
-- Writing PRDs before you're ready to execute
-- Building a library of potential features/projects
-- Organizing ideas by category/priority
-- When you want to "think" but not "do"
+- Planning large projects with multiple phases
+- Breaking down complex work into executable chunks
+- Building a library of project plans
+- Preparing PRDs before Prometheus execution
+- Storing standalone ideas for future reference
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/tasksuperstar idea <name>` | Create new idea (minimal) |
-| `/tasksuperstar draft <name>` | Create draft PRD (structured) |
-| `/tasksuperstar promote <name>` | Promote idea→draft or draft→ready |
-| `/tasksuperstar list [status]` | List all PRDs (ideas/drafts/ready) |
-| `/tasksuperstar show <name>` | Show PRD details |
-| `/tasksuperstar archive <name>` | Archive completed/abandoned PRD |
-| `/tasksuperstar search <query>` | Search PRDs by content |
+| `/tasksuperstar new <project>` | Create new project with master plan |
+| `/tasksuperstar add <project> <phase>` | Add phase PRD to project |
+| `/tasksuperstar status <project> [phase] <status>` | Change status (planned/ready/in-progress/done) |
+| `/tasksuperstar run <project> <phase>` | Prepare phase for Prometheus |
+| `/tasksuperstar inbox <name>` | Quick standalone idea |
+| `/tasksuperstar list [project]` | List projects or phases |
+| `/tasksuperstar show <project> [phase]` | Show details |
+| `/tasksuperstar archive <project>` | Archive completed project |
+| `/tasksuperstar search <query>` | Search all PRDs |
 
 ## Folder Structure
 
 ```
 .tasksuperstar/
-├── ideas/              # Quick ideas, minimal structure
-│   └── {name}.md
-├── drafts/             # Work-in-progress PRDs
-│   └── {name}.md
-├── ready/              # Complete PRDs, ready for execution
-│   └── {name}.md
-├── archive/            # Completed or abandoned
-│   └── YYYY-MM-DD_{name}.md
-└── index.md            # Master index of all PRDs
+├── {project-name}/
+│   ├── _master.md              # Project master plan
+│   ├── phase-01-foundation.md  # Phase 1 PRD
+│   ├── phase-02-core.md        # Phase 2 PRD
+│   └── phase-03-api.md         # Phase 3 PRD
+├── inbox/                      # Standalone ideas
+│   └── some-idea.md
+├── archive/                    # Completed projects
+│   └── YYYY-MM-DD_{project}/
+└── index.md                    # Master index
 ```
+
+## Status Flow
+
+```
+planned → ready → in-progress → done
+                       ↓
+                  /prometheus
+```
+
+- **planned**: Initial state, still being written
+- **ready**: PRD complete, ready for Prometheus
+- **in-progress**: Currently being executed
+- **done**: Completed
 
 ## Templates
 
-### Idea (Minimal)
+### Master Plan (_master.md)
+
 ```markdown
-# Idea: {name}
+# Project: {name}
 **Created:** {timestamp}
-**Status:** idea
+**Status:** planned
 
-## What
-[One sentence description]
+## Vision
 
-## Why
-[Why this matters]
+[What is this project trying to achieve?]
+
+## Scope
+
+### In Scope
+- Major deliverable 1
+- Major deliverable 2
+
+### Out of Scope
+- What this project will NOT do
+
+## Phases
+
+| Phase | Name | Status | Description |
+|-------|------|--------|-------------|
+| 01 | foundation | planned | [Brief description] |
+| 02 | core-engine | planned | [Brief description] |
+| 03 | api-layer | planned | [Brief description] |
+
+## Success Criteria
+
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
 
 ## Notes
+
 -
 ```
 
-### Draft (Structured)
+### Phase PRD (phase-XX-xxx.md)
+
 ```markdown
-# Draft: {name}
-**Created:** {timestamp}
-**Status:** draft
-**Priority:** low/medium/high
-**Category:** [feature/improvement/bug/research]
+# Phase: {name}
+**Project:** {project-name}
+**Phase:** {XX}
+**Status:** planned
 
-## Problem
-[What problem does this solve?]
+## Goal
 
-## Proposed Solution
-[High-level approach]
+[What does this phase accomplish?]
+
+## Scope
+
+[What's included in THIS phase specifically]
 
 ## Requirements
-- [ ] Requirement 1
-- [ ] Requirement 2
 
-## Open Questions
-- [ ] Question 1
-
-## Notes
--
-```
-
-### Ready (Full PRD)
-```markdown
-# PRD: {name}
-**Created:** {timestamp}
-**Status:** ready
-**Priority:** high
-**Category:** [feature/improvement/bug/research]
-**Estimated Effort:** [small/medium/large]
-
-## Problem Statement
-[Detailed problem description]
-
-## Goals
-- Goal 1
-- Goal 2
-
-## Non-Goals
-- What this will NOT do
-
-## Proposed Solution
-[Detailed solution]
-
-## Requirements
 ### Functional
 - [ ] FR1: Description
 - [ ] FR2: Description
 
 ### Non-Functional
-- [ ] NFR1: Performance requirement
-- [ ] NFR2: Security requirement
+- [ ] NFR1: Performance/security requirement
+- [ ] NFR2: Other requirement
 
 ## Technical Approach
-[Implementation details]
 
-## Risks & Mitigations
-| Risk | Mitigation |
-|------|------------|
-|      |            |
+[How will this be implemented?]
 
-## Success Metrics
-- Metric 1
-- Metric 2
+## Dependencies
 
-## Timeline
-- Phase 1: Description
-- Phase 2: Description
+- Depends on: [Previous phases or external dependencies]
+- Enables: [What this phase unlocks]
 
-## Open Questions
-- [ ] Resolved questions go here
+## Success Criteria
 
-## References
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+## Prometheus Context
+
+[When ready to execute, this section provides context for /prometheus]
+
+**Background:** [Brief project context]
+**This Phase:** [What to build in this phase]
+**Constraints:** [Important limitations or requirements]
+
+## Notes
+
 -
 ```
 
-## Workflow
+### Inbox (inbox/*.md)
 
-### Creating Ideas
-```bash
-/tasksuperstar idea mobile-app
-# Creates .tasksuperstar/ideas/mobile-app.md
+```markdown
+# Idea: {name}
+**Created:** {timestamp}
+
+## What
+
+[One sentence description]
+
+## Why
+
+[Why this matters]
+
+## Notes
+
+-
 ```
 
-### Promoting to Draft
-```bash
-/tasksuperstar promote mobile-app
-# Moves to .tasksuperstar/drafts/mobile-app.md
-# Expands template with more structure
-```
+## Workflow Example
 
-### Promoting to Ready
 ```bash
-/tasksuperstar promote mobile-app
-# Moves to .tasksuperstar/ready/mobile-app.md
-# Full PRD template
-```
+# 1. Create project
+/tasksuperstar new ba-platform
 
-### Executing (with Prometheus)
-```bash
-/prometheus mobile-app
-# Reads .tasksuperstar/ready/mobile-app.md as input
-# Creates execution plan in .sisyphus/plans/
+# 2. Add phases
+/tasksuperstar add ba-platform foundation
+/tasksuperstar add ba-platform core-engine
+/tasksuperstar add ba-platform api-layer
+
+# 3. Write PRDs (edit the files)
+# Edit .tasksuperstar/ba-platform/_master.md
+# Edit .tasksuperstar/ba-platform/phase-01-foundation.md
+
+# 4. Mark ready when complete
+/tasksuperstar status ba-platform foundation ready
+
+# 5. Execute with Prometheus
+/tasksuperstar run ba-platform foundation
+# This displays the phase PRD for easy copy/paste to /prometheus
+
+/prometheus
+# Use the PRD content
+
+# 6. Mark done when complete
+/tasksuperstar status ba-platform foundation done
 ```
 
 ## Integration with Sisyphus
 
-TaskSuperstar sits **before** the Sisyphus execution pipeline:
-
 ```
-TaskSuperstar (Planning Library)
-    └── ideas/ → drafts/ → ready/
+TaskSuperstar (PRD Library)
+    └── projects/{name}/_master.md + phase-XX.md
+                              ↓
+                    /tasksuperstar run
                               ↓
 Prometheus (Strategic Planning)
     └── .sisyphus/plans/{task}.md
                               ↓
-planning-with-files (Execution Context)
-    └── .sisyphus/active/{task}/
-                              ↓
 Sisyphus Agents (Execution)
                               ↓
 Archive
-    └── .sisyphus/archive/YYYY-MM-DD_{task}/
 ```
 
 ## Best Practices
 
-1. **Capture immediately**: When you have an idea, create it instantly
-2. **Don't over-polish ideas**: Ideas are meant to be rough
-3. **Promote when ready**: Move to draft only when you want to think more deeply
-4. **Ready means ready**: Only promote to ready when you could execute tomorrow
-5. **Archive freely**: Don't delete - archive for future reference
+1. **One project per major initiative**: Don't mix unrelated work
+2. **Phases should be independently executable**: Each phase = one Prometheus run
+3. **Write Prometheus Context section**: Makes handoff seamless
+4. **Use inbox for quick captures**: Promote to project when ready to plan
+5. **Archive when done**: Keep history, clean active view
+6. **Number phases logically**: 01, 02, 03... to show execution order
+7. **Update master plan phases table**: Keep status in sync
 
-## Index Management
+## Comparison: v1 vs v2
 
-The `index.md` file automatically tracks all PRDs:
+| Aspect | v1.0 | v2.0 |
+|--------|------|------|
+| Structure | Flat (ideas/drafts/ready) | Hierarchical (projects/phases) |
+| Use Case | Individual PRDs | Multi-phase projects |
+| Progression | idea → draft → ready | planned → ready → in-progress → done |
+| Master Plan | None | Per-project _master.md |
+| Phases | No concept | Core feature |
+| Best For | Small standalone ideas | Large complex projects |
 
-```markdown
-# TaskSuperstar Index
+## Status Management
 
-## Ideas (3)
-- [ ] mobile-app - "Mobile companion app"
-- [ ] dark-mode - "Add dark mode support"
-- [ ] api-v2 - "API version 2 redesign"
+### Project Status
+- **planned**: Some phases still being written
+- **ready**: All phases ready for execution
+- **in-progress**: Currently executing
+- **done**: All phases complete
 
-## Drafts (2)
-- [ ] auth-system - "OAuth2 authentication"
-- [ ] caching - "Redis caching layer"
+### Phase Status
+- **planned**: PRD being written
+- **ready**: PRD complete, ready for Prometheus
+- **in-progress**: Being executed
+- **done**: Completed
 
-## Ready (1)
-- [ ] dashboard - "Admin dashboard redesign"
-
-## Recently Archived
-- [x] 2026-01-20_old-feature - completed
+Change status with:
+```bash
+/tasksuperstar status <project> <status>        # Project-level
+/tasksuperstar status <project> <phase> <status> # Phase-level
 ```
 
 hooks:
@@ -230,4 +268,4 @@ hooks:
     - matcher: "Write|Edit"
       hooks:
         - type: command
-          command: "cat .tasksuperstar/index.md 2>/dev/null | head -20 || true"
+          command: "cat .tasksuperstar/index.md 2>/dev/null | head -30 || true"

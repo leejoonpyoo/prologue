@@ -1,5 +1,5 @@
 #!/bin/bash
-# Initialize TaskSuperstar folder structure
+# Initialize TaskSuperstar v2.0 folder structure
 # Usage: ./init.sh [project-root]
 
 set -e
@@ -21,56 +21,36 @@ cd "$PROJECT_ROOT"
 TASKSUPERSTAR_DIR=".tasksuperstar"
 
 if [ -d "$TASKSUPERSTAR_DIR" ]; then
-    echo -e "${YELLOW}TaskSuperstar already initialized at ${TASKSUPERSTAR_DIR}${NC}"
+    # Check if it's v1 structure
+    if [ -d "$TASKSUPERSTAR_DIR/ideas" ] || [ -d "$TASKSUPERSTAR_DIR/drafts" ]; then
+        echo -e "${YELLOW}TaskSuperstar v1 detected. Run migrate.sh to upgrade.${NC}"
+        exit 0
+    fi
+    echo -e "${YELLOW}TaskSuperstar already initialized${NC}"
     exit 0
 fi
 
-echo -e "${BLUE}Initializing TaskSuperstar...${NC}"
+echo -e "${BLUE}Initializing TaskSuperstar v2.0...${NC}"
 
-# Create folder structure
-mkdir -p "$TASKSUPERSTAR_DIR/ideas"
-mkdir -p "$TASKSUPERSTAR_DIR/drafts"
-mkdir -p "$TASKSUPERSTAR_DIR/ready"
+# Create folder structure (v2)
+mkdir -p "$TASKSUPERSTAR_DIR/inbox"
 mkdir -p "$TASKSUPERSTAR_DIR/archive"
 
-# Create index.md
-cat > "$TASKSUPERSTAR_DIR/index.md" << EOF
-# TaskSuperstar Index
-
-**Last Updated:** ${TIMESTAMP}
-
-## Ideas (0)
-
-_No ideas yet. Create one with \`/tasksuperstar idea <name>\`_
-
-## Drafts (0)
-
-_No drafts yet. Promote an idea with \`/tasksuperstar promote <name>\`_
-
-## Ready (0)
-
-_No ready PRDs yet. Promote a draft with \`/tasksuperstar promote <name>\`_
-
-## Recently Archived
-
-_No archived items yet._
-
----
-
-*This index is automatically updated by TaskSuperstar commands.*
-EOF
+# Create index.md from template
+sed "s/\${TIMESTAMP}/$TIMESTAMP/g" "$TEMPLATE_DIR/index.md" > "$TASKSUPERSTAR_DIR/index.md"
 
 echo ""
-echo -e "${GREEN}TaskSuperstar initialized!${NC}"
+echo -e "${GREEN}TaskSuperstar v2.0 initialized!${NC}"
 echo ""
-echo "Folder structure:"
+echo "Structure:"
 echo "  $TASKSUPERSTAR_DIR/"
-echo "  ├── ideas/     # Quick ideas"
-echo "  ├── drafts/    # Work-in-progress PRDs"
-echo "  ├── ready/     # Ready for execution"
-echo "  ├── archive/   # Completed/abandoned"
-echo "  └── index.md   # Master index"
+echo "  ├── {projects}/   # Create with /tasksuperstar new <name>"
+echo "  ├── inbox/        # Quick ideas"
+echo "  ├── archive/      # Completed projects"
+echo "  └── index.md      # Master index"
 echo ""
 echo "Commands:"
-echo "  /tasksuperstar idea <name>    # Create new idea"
-echo "  /tasksuperstar list           # List all PRDs"
+echo "  /tasksuperstar new <project>     # Create project"
+echo "  /tasksuperstar inbox <idea>      # Quick idea"
+echo "  /tasksuperstar list              # List all"
+echo ""

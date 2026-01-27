@@ -1,100 +1,90 @@
 #!/bin/bash
-# List all PRDs
-# Usage: ./list.sh [status] [project-root]
-# status: all, ideas, drafts, ready, archive
+# List projects and phases
+# Usage: ./list.sh [project]
 
-set -e
+PROJECT_ROOT="${PROJECT_ROOT:-.}"
+PROJECT_NAME="$1"
 
-STATUS="${1:-all}"
-PROJECT_ROOT="${2:-.}"
-
-# Colors
-RED='\033[0;31m'
+BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
+GRAY='\033[0;90m'
 NC='\033[0m'
 
-cd "$PROJECT_ROOT"
-
-TASKSUPERSTAR_DIR=".tasksuperstar"
+TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
 
 if [ ! -d "$TASKSUPERSTAR_DIR" ]; then
-    echo -e "${YELLOW}TaskSuperstar not initialized${NC}"
-    echo "Run: /tasksuperstar init"
-    exit 0
+    echo "TaskSuperstar not initialized. Run /tasksuperstar init"
+    exit 1
 fi
 
-list_folder() {
-    local folder=$1
-    local label=$2
-    local color=$3
-    local dir="$TASKSUPERSTAR_DIR/$folder"
-
-    if [ ! -d "$dir" ]; then
-        return
+if [ -n "$PROJECT_NAME" ]; then
+    # Show specific project's phases
+    PROJECT_DIR="$TASKSUPERSTAR_DIR/$PROJECT_NAME"
+    if [ ! -d "$PROJECT_DIR" ]; then
+        echo "Project '$PROJECT_NAME' not found"
+        exit 1
     fi
 
-    local files=($(find "$dir" -maxdepth 1 -name "*.md" -type f 2>/dev/null | sort))
-    local count=${#files[@]}
+    echo -e "${BLUE}Project: $PROJECT_NAME${NC}"
 
-    echo -e "${color}## ${label} (${count})${NC}"
+    # Show master status
+    if [ -f "$PROJECT_DIR/_master.md" ]; then
+        STATUS=$(grep "^status:" "$PROJECT_DIR/_master.md" | head -1 | cut -d' ' -f2)
+        echo -e "  Status: ${GREEN}$STATUS${NC}"
+    fi
+
+    echo ""
+    echo "Phases:"
+
+    for phase in "$PROJECT_DIR"/phase-*.md; do
+        if [ -f "$phase" ]; then
+            BASENAME=$(basename "$phase" .md)
+            STATUS=$(grep "^status:" "$phase" | head -1 | cut -d' ' -f2)
+            case "$STATUS" in
+                done) COLOR=$GRAY ;;
+                in-progress) COLOR=$YELLOW ;;
+                ready) COLOR=$GREEN ;;
+                *) COLOR=$NC ;;
+            esac
+            echo -e "  - $BASENAME ${COLOR}[$STATUS]${NC}"
+        fi
+    done
+else
+    # List all projects
+    echo -e "${BLUE}=== Projects ===${NC}"
     echo ""
 
-    if [ $count -eq 0 ]; then
-        echo "  (empty)"
-    else
-        for file in "${files[@]}"; do
-            local name=$(basename "$file" .md)
-            local title=$(grep "^# " "$file" | head -1 | sed 's/^# //' || echo "$name")
-            local priority=$(grep "^\*\*Priority:\*\*" "$file" | sed 's/.*: //' || echo "-")
-            printf "  %-25s %s\n" "$name" "[$priority]"
+    for project_dir in "$TASKSUPERSTAR_DIR"/*/; do
+        if [ -d "$project_dir" ] && [ "$(basename "$project_dir")" != "inbox" ] && [ "$(basename "$project_dir")" != "archive" ]; then
+            PROJECT=$(basename "$project_dir")
+            PHASE_COUNT=$(ls -1 "$project_dir"/phase-*.md 2>/dev/null | wc -l | tr -d ' ')
+
+            if [ -f "$project_dir/_master.md" ]; then
+                STATUS=$(grep "^status:" "$project_dir/_master.md" | head -1 | cut -d' ' -f2)
+            else
+                STATUS="unknown"
+            fi
+
+            echo -e "  ${GREEN}$PROJECT${NC} - $PHASE_COUNT phases [$STATUS]"
+        fi
+    done
+
+    echo ""
+    echo -e "${BLUE}=== Inbox ===${NC}"
+    echo ""
+
+    INBOX_DIR="$TASKSUPERSTAR_DIR/inbox"
+    if [ -d "$INBOX_DIR" ]; then
+        for idea in "$INBOX_DIR"/*.md; do
+            if [ -f "$idea" ]; then
+                NAME=$(basename "$idea" .md)
+                echo "  - $NAME"
+            fi
         done
     fi
-    echo ""
-}
 
-echo ""
-echo -e "${BLUE}TaskSuperstar PRD Library${NC}"
-echo "=========================="
-echo ""
-
-case "$STATUS" in
-    ideas)
-        list_folder "ideas" "Ideas" "$YELLOW"
-        ;;
-    drafts)
-        list_folder "drafts" "Drafts" "$BLUE"
-        ;;
-    ready)
-        list_folder "ready" "Ready" "$GREEN"
-        ;;
-    archive)
-        list_folder "archive" "Archive" "$CYAN"
-        ;;
-    all|*)
-        list_folder "ideas" "Ideas" "$YELLOW"
-        list_folder "drafts" "Drafts" "$BLUE"
-        list_folder "ready" "Ready" "$GREEN"
-
-        # Show recent archives (last 5)
-        ARCHIVE_DIR="$TASKSUPERSTAR_DIR/archive"
-        if [ -d "$ARCHIVE_DIR" ]; then
-            ARCHIVES=($(find "$ARCHIVE_DIR" -maxdepth 1 -name "*.md" -type f 2>/dev/null | sort -r | head -5))
-            if [ ${#ARCHIVES[@]} -gt 0 ]; then
-                echo -e "${CYAN}## Recent Archives${NC}"
-                echo ""
-                for file in "${ARCHIVES[@]}"; do
-                    echo "  $(basename "$file" .md)"
-                done
-                echo ""
-            fi
-        fi
-        ;;
-esac
-
-echo "Commands:"
-echo "  /tasksuperstar idea <name>      Create new idea"
-echo "  /tasksuperstar show <name>      View PRD details"
-echo "  /tasksuperstar promote <name>   Promote to next stage"
+    if [ -z "$(ls -A "$INBOX_DIR" 2>/dev/null)" ]; then
+        echo "  (empty)"
+    fi
+fi

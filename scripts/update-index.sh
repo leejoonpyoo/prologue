@@ -16,7 +16,7 @@ if [ ! -d "$TASKSUPERSTAR_DIR" ]; then
     exit 0
 fi
 
-# Count files in each folder
+# Count files in directory
 count_files() {
     local dir=$1
     if [ -d "$dir" ]; then
@@ -26,9 +26,13 @@ count_files() {
     fi
 }
 
-IDEAS_COUNT=$(count_files "$TASKSUPERSTAR_DIR/ideas")
-DRAFTS_COUNT=$(count_files "$TASKSUPERSTAR_DIR/drafts")
-READY_COUNT=$(count_files "$TASKSUPERSTAR_DIR/ready")
+# Count projects
+PROJECT_COUNT=0
+if [ -d "$TASKSUPERSTAR_DIR" ]; then
+    PROJECT_COUNT=$(find "$TASKSUPERSTAR_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "inbox" -not -name "archive" 2>/dev/null | wc -l | tr -d ' ')
+fi
+
+INBOX_COUNT=$(count_files "$TASKSUPERSTAR_DIR/inbox")
 
 # Generate index content
 {
@@ -37,13 +41,54 @@ READY_COUNT=$(count_files "$TASKSUPERSTAR_DIR/ready")
     echo "**Last Updated:** ${TIMESTAMP}"
     echo ""
 
-    # Ideas section
-    echo "## Ideas (${IDEAS_COUNT})"
+    # Projects section
+    echo "## Projects (${PROJECT_COUNT})"
     echo ""
-    if [ "$IDEAS_COUNT" -eq 0 ]; then
-        echo "_No ideas yet. Create one with \`/tasksuperstar idea <name>\`_"
+    if [ "$PROJECT_COUNT" -eq 0 ]; then
+        echo "_No projects yet. Create one with \`/tasksuperstar new <project-name>\`_"
     else
-        for file in "$TASKSUPERSTAR_DIR/ideas"/*.md; do
+        for project_dir in "$TASKSUPERSTAR_DIR"/*/; do
+            if [ -d "$project_dir" ] && [ "$(basename "$project_dir")" != "inbox" ] && [ "$(basename "$project_dir")" != "archive" ]; then
+                PROJECT_NAME=$(basename "$project_dir")
+                MASTER_FILE="$project_dir/_master.md"
+
+                if [ -f "$MASTER_FILE" ]; then
+                    STATUS=$(grep "^status:" "$MASTER_FILE" | head -1 | cut -d' ' -f2 || echo "planned")
+                    PHASE_COUNT=$(ls -1 "$project_dir"/phase-*.md 2>/dev/null | wc -l | tr -d ' ')
+
+                    echo "### $PROJECT_NAME [$STATUS]"
+                    echo ""
+                    if [ "$PHASE_COUNT" -eq 0 ]; then
+                        echo "_No phases yet. Add one with \`/tasksuperstar add $PROJECT_NAME <phase-name>\`_"
+                    else
+                        echo "| # | Phase | Status |"
+                        echo "|---|-------|--------|"
+                        for phase_file in "$project_dir"/phase-*.md; do
+                            if [ -f "$phase_file" ]; then
+                                FILENAME=$(basename "$phase_file" .md)
+                                # Extract phase number (phase-01-name.md -> 01)
+                                PHASE_NUM=$(echo "$FILENAME" | sed 's/phase-//' | cut -d'-' -f1)
+                                # Extract phase name (phase-01-name.md -> name)
+                                PHASE_NAME=$(echo "$FILENAME" | sed 's/phase-[0-9]*-//' | tr '-' ' ')
+                                PHASE_STATUS=$(grep "^status:" "$phase_file" | head -1 | cut -d' ' -f2 || echo "planned")
+
+                                echo "| $PHASE_NUM | $PHASE_NAME | $PHASE_STATUS |"
+                            fi
+                        done
+                    fi
+                    echo ""
+                fi
+            fi
+        done
+    fi
+
+    # Inbox section
+    echo "## Inbox (${INBOX_COUNT})"
+    echo ""
+    if [ "$INBOX_COUNT" -eq 0 ]; then
+        echo "_No ideas yet. Create one with \`/tasksuperstar inbox <name>\`_"
+    else
+        for file in "$TASKSUPERSTAR_DIR/inbox"/*.md; do
             if [ -f "$file" ]; then
                 NAME=$(basename "$file" .md)
                 WHAT=$(grep -A 5 "## What" "$file" | tail -n +2 | head -1 | sed 's/^\[//' | sed 's/\]$//' | head -c 50 || echo "")
@@ -52,39 +97,6 @@ READY_COUNT=$(count_files "$TASKSUPERSTAR_DIR/ready")
                 else
                     echo "- [ ] $NAME"
                 fi
-            fi
-        done
-    fi
-    echo ""
-
-    # Drafts section
-    echo "## Drafts (${DRAFTS_COUNT})"
-    echo ""
-    if [ "$DRAFTS_COUNT" -eq 0 ]; then
-        echo "_No drafts yet. Promote an idea with \`/tasksuperstar promote <name>\`_"
-    else
-        for file in "$TASKSUPERSTAR_DIR/drafts"/*.md; do
-            if [ -f "$file" ]; then
-                NAME=$(basename "$file" .md)
-                PRIORITY=$(grep "^\*\*Priority:\*\*" "$file" | sed 's/^\*\*Priority:\*\* //' || echo "medium")
-                echo "- [ ] $NAME [$PRIORITY]"
-            fi
-        done
-    fi
-    echo ""
-
-    # Ready section
-    echo "## Ready (${READY_COUNT})"
-    echo ""
-    if [ "$READY_COUNT" -eq 0 ]; then
-        echo "_No ready PRDs yet. Promote a draft with \`/tasksuperstar promote <name>\`_"
-    else
-        for file in "$TASKSUPERSTAR_DIR/ready"/*.md; do
-            if [ -f "$file" ]; then
-                NAME=$(basename "$file" .md)
-                PRIORITY=$(grep "^\*\*Priority:\*\*" "$file" | sed 's/^\*\*Priority:\*\* //' || echo "high")
-                EFFORT=$(grep "^\*\*Estimated Effort:\*\*" "$file" | sed 's/^\*\*Estimated Effort:\*\* //' || echo "-")
-                echo "- [ ] $NAME [$PRIORITY, $EFFORT]"
             fi
         done
     fi

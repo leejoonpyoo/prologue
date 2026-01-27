@@ -1,16 +1,16 @@
-# Idea: ${NAME}
+---
+status: idea
+created: ${TIMESTAMP}
+updated: ${TIMESTAMP}
+---
 
-**Created:** ${TIMESTAMP}
-**Status:** idea
+# ${NAME}
 
 ## What
-
 [One sentence description]
 
 ## Why
-
 [Why this matters]
 
 ## Notes
-
 -

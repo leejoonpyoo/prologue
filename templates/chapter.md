@@ -1,15 +1,15 @@
 ---
 project: ${PROJECT_NAME}
-phase: ${PHASE_NUMBER}
+chapter: ${CHAPTER_NUMBER}
 status: planned
 created: ${TIMESTAMP}
 updated: ${TIMESTAMP}
 ---
 
-# Phase ${PHASE_NUMBER}: ${PHASE_NAME}
+# Chapter ${CHAPTER_NUMBER}: ${CHAPTER_NAME}
 
 ## Problem Statement
-[What problem does this phase solve?]
+[What problem does this chapter solve?]
 
 ## Goals
 - [ ] Goal 1
@@ -30,7 +30,7 @@ updated: ${TIMESTAMP}
 [High-level technical design]
 
 ## Dependencies
-- Previous phases:
+- Previous chapters:
 - External dependencies:
 
 ## Risks & Mitigations

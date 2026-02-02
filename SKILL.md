@@ -1,21 +1,21 @@
-# TaskSuperstar Skill
+# Prologue Skill
 
-name: tasksuperstar
+name: prologue
 description: PRD library and brainstorming storage - save ideas before execution
-version: 2.0.0
+version: 3.0.0
 author: leejoonpyoo
 
 ## Overview
 
-TaskSuperstar is a **hierarchical PRD (Product Requirements Document) library** for planning before execution. It manages project master plans and phase-based PRDs that feed into Prometheus for implementation.
+Prologue is a **hierarchical PRD (Product Requirements Document) library** for planning before execution. It manages project master plans and chapter-based PRDs that feed into Prometheus for implementation.
 
 ```
-[Project Master Plan] → [Phase PRDs] → /prometheus → Execute
+[Project Master Plan] → [Chapter PRDs] → /prometheus → Execute
 ```
 
 ## When to Use
 
-- Planning large projects with multiple phases
+- Planning large projects with multiple chapters
 - Breaking down complex work into executable chunks
 - Building a library of project plans
 - Preparing PRDs before Prometheus execution
@@ -25,41 +25,41 @@ TaskSuperstar is a **hierarchical PRD (Product Requirements Document) library** 
 
 | Command | Description |
 |---------|-------------|
-| `/tasksuperstar new <project>` | Create new project with master plan |
-| `/tasksuperstar add <project> <phase>` | Add phase PRD to project |
-| `/tasksuperstar status <project> [phase] <status>` | Change status (planned/ready/in-progress/done) |
-| `/tasksuperstar run <project> <phase>` | Prepare phase for Prometheus |
-| `/tasksuperstar inbox <name>` | Quick standalone idea |
-| `/tasksuperstar list [project]` | List projects or phases |
-| `/tasksuperstar show <project> [phase]` | Show details |
-| `/tasksuperstar archive <project>` | Archive completed project |
-| `/tasksuperstar search <query>` | Search all PRDs |
+| `/prologue new <project>` | Create new project with master plan |
+| `/prologue add <project> <chapter>` | Add chapter PRD to project |
+| `/prologue status <project> [chapter] <status>` | Change status (planned/ready/in-progress/done) |
+| `/prologue run <project> <chapter>` | Prepare chapter for Prometheus |
+| `/prologue inbox <name>` | Quick standalone idea |
+| `/prologue list [project]` | List projects or chapters |
+| `/prologue show <project> [chapter]` | Show details |
+| `/prologue archive <project>` | Archive completed project |
+| `/prologue search <query>` | Search all PRDs |
 
-## Key Concept: Phases
+## Key Concept: Chapters
 
-**Phases are independent work units, NOT refinement stages.**
+**Chapters are independent work units, NOT refinement stages.**
 
-- All phases have the same level of detail (fully executable PRDs)
-- Phase numbers indicate execution order/priority, not maturity
-- Each phase = one Prometheus run
-- Add phases incrementally as you plan, not all upfront
+- All chapters have the same level of detail (fully executable PRDs)
+- Chapter numbers indicate execution order/priority, not maturity
+- Each chapter = one Prometheus run
+- Add chapters incrementally as you plan, not all upfront
 
 ```
 _master.md (전체 비전)
-    ├── phase-01 (작업1) ─→ /prometheus ─→ 실행
-    ├── phase-02 (작업2) ─→ /prometheus ─→ 실행
-    └── phase-03 (작업3) ─→ /prometheus ─→ 실행
+    ├── chapter-01 (작업1) ─→ /prometheus ─→ 실행
+    ├── chapter-02 (작업2) ─→ /prometheus ─→ 실행
+    └── chapter-03 (작업3) ─→ /prometheus ─→ 실행
 ```
 
 ## Folder Structure
 
 ```
-.tasksuperstar/
+.prologue/
 ├── _inbox/                     # Standalone ideas (system folder)
 ├── _archive/                   # Completed projects (system folder)
 ├── {project-name}/
 │   ├── _master.md              # Project master plan (vision, scope)
-│   └── phase-01-xxx.md         # Add phases as needed
+│   └── chapter-01-xxx.md       # Add chapters as needed
 └── index.md                    # Master index
 ```
 
@@ -98,10 +98,10 @@ planned → ready → in-progress → done
 ### Out of Scope
 - What this project will NOT do
 
-## Phases
+## Chapters
 
-| Phase | Name | Status | Description |
-|-------|------|--------|-------------|
+| Chapter | Name | Status | Description |
+|---------|------|--------|-------------|
 | 01 | foundation | planned | [Brief description] |
 | 02 | core-engine | planned | [Brief description] |
 | 03 | api-layer | planned | [Brief description] |
@@ -117,21 +117,21 @@ planned → ready → in-progress → done
 -
 ```
 
-### Phase PRD (phase-XX-xxx.md)
+### Chapter PRD (chapter-XX-xxx.md)
 
 ```markdown
-# Phase: {name}
+# Chapter: {name}
 **Project:** {project-name}
-**Phase:** {XX}
+**Chapter:** {XX}
 **Status:** planned
 
 ## Goal
 
-[What does this phase accomplish?]
+[What does this chapter accomplish?]
 
 ## Scope
 
-[What's included in THIS phase specifically]
+[What's included in THIS chapter specifically]
 
 ## Requirements
 
@@ -149,8 +149,8 @@ planned → ready → in-progress → done
 
 ## Dependencies
 
-- Depends on: [Previous phases or external dependencies]
-- Enables: [What this phase unlocks]
+- Depends on: [Previous chapters or external dependencies]
+- Enables: [What this chapter unlocks]
 
 ## Success Criteria
 
@@ -162,7 +162,7 @@ planned → ready → in-progress → done
 [When ready to execute, this section provides context for /prometheus]
 
 **Background:** [Brief project context]
-**This Phase:** [What to build in this phase]
+**This Chapter:** [What to build in this chapter]
 **Constraints:** [Important limitations or requirements]
 
 ## Notes
@@ -193,33 +193,33 @@ planned → ready → in-progress → done
 
 ```bash
 # 1. Create project (starts with _master.md only)
-/tasksuperstar new ba-platform
+/prologue new ba-platform
 # → Edit _master.md with vision, scope, success criteria
 
-# 2. Add first phase when ready to plan it
-/tasksuperstar add ba-platform foundation
-# → Edit phase-01-foundation.md with detailed requirements
+# 2. Add first chapter when ready to plan it
+/prologue add ba-platform foundation
+# → Edit chapter-01-foundation.md with detailed requirements
 
 # 3. Mark ready and execute
-/tasksuperstar status ba-platform foundation ready
-/tasksuperstar run ba-platform foundation
+/prologue status ba-platform foundation ready
+/prologue run ba-platform foundation
 /prometheus  # Execute with Prometheus
 
-# 4. Complete and add next phase
-/tasksuperstar status ba-platform foundation done
-/tasksuperstar add ba-platform core-engine  # Add next phase when needed
+# 4. Complete and add next chapter
+/prologue status ba-platform foundation done
+/prologue add ba-platform core-engine  # Add next chapter when needed
 # → Repeat cycle
 ```
 
-**Incremental approach**: Don't plan all phases upfront. Add each phase as the previous one completes or when you're ready to detail it.
+**Incremental approach**: Don't plan all chapters upfront. Add each chapter as the previous one completes or when you're ready to detail it.
 
 ## Integration with Sisyphus
 
 ```
-TaskSuperstar (PRD Library)
-    └── projects/{name}/_master.md + phase-XX.md
+Prologue (PRD Library)
+    └── projects/{name}/_master.md + chapter-XX.md
                               ↓
-                    /tasksuperstar run
+                    /prologue run
                               ↓
 Prometheus (Strategic Planning)
     └── .sisyphus/plans/{task}.md
@@ -232,33 +232,32 @@ Archive
 ## Best Practices
 
 1. **One project per major initiative**: Don't mix unrelated work
-2. **Phases should be independently executable**: Each phase = one Prometheus run
+2. **Chapters should be independently executable**: Each chapter = one Prometheus run
 3. **Write Prometheus Context section**: Makes handoff seamless
 4. **Use inbox for quick captures**: Promote to project when ready to plan
 5. **Archive when done**: Keep history, clean active view
-6. **Number phases logically**: 01, 02, 03... to show execution order
-7. **Update master plan phases table**: Keep status in sync
+6. **Number chapters logically**: 01, 02, 03... to show execution order
+7. **Update master plan chapters table**: Keep status in sync
 
-## Comparison: v1 vs v2
+## Comparison: v2 vs v3
 
-| Aspect | v1.0 | v2.0 |
+| Aspect | v2.0 | v3.0 |
 |--------|------|------|
-| Structure | Flat (ideas/drafts/ready) | Hierarchical (projects/phases) |
-| Use Case | Individual PRDs | Multi-phase projects |
-| Progression | idea → draft → ready | planned → ready → in-progress → done |
-| Master Plan | None | Per-project _master.md |
-| Phases | No concept | Core feature |
-| Best For | Small standalone ideas | Large complex projects |
+| Name | TaskSuperstar | Prologue |
+| Work Units | Phases | Chapters |
+| Folder | .tasksuperstar/ | .prologue/ |
+| Command | /tasksuperstar | /prologue |
+| Philosophy | Same | Same (improved naming) |
 
 ## Status Management
 
 ### Project Status
-- **planned**: Some phases still being written
-- **ready**: All phases ready for execution
+- **planned**: Some chapters still being written
+- **ready**: All chapters ready for execution
 - **in-progress**: Currently executing
-- **done**: All phases complete
+- **done**: All chapters complete
 
-### Phase Status
+### Chapter Status
 - **planned**: PRD being written
 - **ready**: PRD complete, ready for Prometheus
 - **in-progress**: Being executed
@@ -266,8 +265,8 @@ Archive
 
 Change status with:
 ```bash
-/tasksuperstar status <project> <status>        # Project-level
-/tasksuperstar status <project> <phase> <status> # Phase-level
+/prologue status <project> <status>        # Project-level
+/prologue status <project> <chapter> <status> # Chapter-level
 ```
 
 hooks:
@@ -275,4 +274,4 @@ hooks:
     - matcher: "Write|Edit"
       hooks:
         - type: command
-          command: "cat .tasksuperstar/index.md 2>/dev/null | head -30 || true"
+          command: "cat .prologue/index.md 2>/dev/null | head -30 || true"

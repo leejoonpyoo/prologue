@@ -18,12 +18,12 @@ NC='\033[0m'
 
 if [ -z "$PROJECT_NAME" ]; then
     echo -e "${RED}Error: Project name required${NC}"
-    echo "Usage: /tasksuperstar new <project-name>"
+    echo "Usage: /prologue new <project-name>"
     exit 1
 fi
 
-TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
-PROJECT_DIR="$TASKSUPERSTAR_DIR/$PROJECT_NAME"
+PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROJECT_DIR="$PROLOGUE_DIR/$PROJECT_NAME"
 
 if [ -d "$PROJECT_DIR" ]; then
     echo -e "${YELLOW}Project '$PROJECT_NAME' already exists${NC}"
@@ -40,7 +40,7 @@ sed -e "s/\${PROJECT_NAME}/$PROJECT_NAME/g" \
 echo -e "${GREEN}Created project: $PROJECT_NAME${NC}"
 echo "  $PROJECT_DIR/_master.md"
 echo ""
-echo "Next: /tasksuperstar add $PROJECT_NAME <phase-name>"
+echo "Next: /prologue add $PROJECT_NAME <chapter-name>"
 
 # Update index
 "$SCRIPT_DIR/update-index.sh" "$PROJECT_ROOT"

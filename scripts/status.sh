@@ -1,6 +1,6 @@
 #!/bin/bash
-# Change status of project or phase
-# Usage: ./status.sh <project> [phase] <status>
+# Change status of project or chapter
+# Usage: ./status.sh <project> [chapter] <status>
 # Status: planned | ready | in-progress | done
 
 set -e
@@ -15,15 +15,15 @@ NC='\033[0m'
 # Parse arguments
 if [ $# -eq 2 ]; then
     PROJECT_NAME="$1"
-    PHASE=""
+    CHAPTER=""
     NEW_STATUS="$2"
 elif [ $# -eq 3 ]; then
     PROJECT_NAME="$1"
-    PHASE="$2"
+    CHAPTER="$2"
     NEW_STATUS="$3"
 else
     echo -e "${RED}Error: Invalid arguments${NC}"
-    echo "Usage: /tasksuperstar status <project> [phase] <status>"
+    echo "Usage: /prologue status <project> [chapter] <status>"
     echo "Status: planned | ready | in-progress | done"
     exit 1
 fi
@@ -38,20 +38,20 @@ case "$NEW_STATUS" in
         ;;
 esac
 
-TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
-PROJECT_DIR="$TASKSUPERSTAR_DIR/$PROJECT_NAME"
+PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROJECT_DIR="$PROLOGUE_DIR/$PROJECT_NAME"
 
 if [ ! -d "$PROJECT_DIR" ]; then
     echo -e "${RED}Project '$PROJECT_NAME' not found${NC}"
     exit 1
 fi
 
-if [ -z "$PHASE" ]; then
+if [ -z "$CHAPTER" ]; then
     TARGET_FILE="$PROJECT_DIR/_master.md"
 else
-    TARGET_FILE=$(ls "$PROJECT_DIR"/phase-*-"$PHASE"*.md 2>/dev/null | head -1)
+    TARGET_FILE=$(ls "$PROJECT_DIR"/chapter-*-"$CHAPTER"*.md 2>/dev/null | head -1)
     if [ -z "$TARGET_FILE" ]; then
-        TARGET_FILE=$(ls "$PROJECT_DIR"/phase-"$PHASE"-*.md 2>/dev/null | head -1)
+        TARGET_FILE=$(ls "$PROJECT_DIR"/chapter-"$CHAPTER"-*.md 2>/dev/null | head -1)
     fi
 fi
 

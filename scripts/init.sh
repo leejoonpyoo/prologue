@@ -1,5 +1,5 @@
 #!/bin/bash
-# Initialize TaskSuperstar v2.0 folder structure
+# Initialize Prologue v3.0 folder structure
 # Usage: ./init.sh [project-root]
 
 set -e
@@ -18,39 +18,40 @@ NC='\033[0m'
 
 cd "$PROJECT_ROOT"
 
-TASKSUPERSTAR_DIR=".tasksuperstar"
+PROLOGUE_DIR=".prologue"
 
-if [ -d "$TASKSUPERSTAR_DIR" ]; then
-    # Check if it's v1 structure
-    if [ -d "$TASKSUPERSTAR_DIR/ideas" ] || [ -d "$TASKSUPERSTAR_DIR/drafts" ]; then
-        echo -e "${YELLOW}TaskSuperstar v1 detected. Run migrate.sh to upgrade.${NC}"
-        exit 0
-    fi
-    echo -e "${YELLOW}TaskSuperstar already initialized${NC}"
+if [ -d "$PROLOGUE_DIR" ]; then
+    echo -e "${YELLOW}Prologue already initialized${NC}"
     exit 0
 fi
 
-echo -e "${BLUE}Initializing TaskSuperstar v2.0...${NC}"
+# Check for old TaskSuperstar structure
+if [ -d ".tasksuperstar" ]; then
+    echo -e "${YELLOW}TaskSuperstar v2 detected. Run /prologue migrate to upgrade.${NC}"
+    exit 0
+fi
 
-# Create folder structure (v2)
-mkdir -p "$TASKSUPERSTAR_DIR/_inbox"
-mkdir -p "$TASKSUPERSTAR_DIR/_archive"
+echo -e "${BLUE}Initializing Prologue v3.0...${NC}"
+
+# Create folder structure
+mkdir -p "$PROLOGUE_DIR/_inbox"
+mkdir -p "$PROLOGUE_DIR/_archive"
 
 # Create index.md from template
-sed "s/\${TIMESTAMP}/$TIMESTAMP/g" "$TEMPLATE_DIR/index.md" > "$TASKSUPERSTAR_DIR/index.md"
+sed "s/\${TIMESTAMP}/$TIMESTAMP/g" "$TEMPLATE_DIR/index.md" > "$PROLOGUE_DIR/index.md"
 
 echo ""
-echo -e "${GREEN}TaskSuperstar v2.0 initialized!${NC}"
+echo -e "${GREEN}Prologue v3.0 initialized!${NC}"
 echo ""
 echo "Structure:"
-echo "  $TASKSUPERSTAR_DIR/"
+echo "  $PROLOGUE_DIR/"
 echo "  ├── _inbox/       # Quick ideas"
 echo "  ├── _archive/     # Completed projects"
-echo "  ├── {projects}/   # Create with /tasksuperstar new <name>"
+echo "  ├── {projects}/   # Create with /prologue new <name>"
 echo "  └── index.md      # Master index"
 echo ""
 echo "Commands:"
-echo "  /tasksuperstar new <project>     # Create project"
-echo "  /tasksuperstar inbox <idea>      # Quick idea"
-echo "  /tasksuperstar list              # List all"
+echo "  /prologue new <project>     # Create project"
+echo "  /prologue inbox <idea>      # Quick idea"
+echo "  /prologue list              # List all"
 echo ""

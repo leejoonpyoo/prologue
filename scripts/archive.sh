@@ -16,18 +16,18 @@ NC='\033[0m'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [ -z "$PROJECT_NAME" ]; then
-    echo "Usage: /tasksuperstar archive <project>"
+    echo "Usage: /prologue archive <project>"
     exit 1
 fi
 
-TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
-PROJECT_DIR="$TASKSUPERSTAR_DIR/$PROJECT_NAME"
-ARCHIVE_DIR="$TASKSUPERSTAR_DIR/_archive"
+PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROJECT_DIR="$PROLOGUE_DIR/$PROJECT_NAME"
+ARCHIVE_DIR="$PROLOGUE_DIR/_archive"
 
 # Check inbox first
-if [ -f "$TASKSUPERSTAR_DIR/_inbox/$PROJECT_NAME.md" ]; then
+if [ -f "$PROLOGUE_DIR/_inbox/$PROJECT_NAME.md" ]; then
     mkdir -p "$ARCHIVE_DIR"
-    mv "$TASKSUPERSTAR_DIR/_inbox/$PROJECT_NAME.md" "$ARCHIVE_DIR/${TIMESTAMP}_${PROJECT_NAME}.md"
+    mv "$PROLOGUE_DIR/_inbox/$PROJECT_NAME.md" "$ARCHIVE_DIR/${TIMESTAMP}_${PROJECT_NAME}.md"
     echo -e "${GREEN}Archived inbox idea: $PROJECT_NAME${NC}"
     "$SCRIPT_DIR/update-index.sh" "$PROJECT_ROOT"
     exit 0

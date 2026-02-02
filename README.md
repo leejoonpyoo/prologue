@@ -1,54 +1,54 @@
-# Claude TaskSuperstar
+# Claude Prologue
 
-A Claude Code skill for hierarchical PRD (Product Requirements Document) library management. Plan complex multi-phase projects before execution.
+A Claude Code skill for hierarchical PRD (Product Requirements Document) library management. Plan complex multi-chapter projects before execution.
 
 ## What is this?
 
-TaskSuperstar v2.0 is a **hierarchical PRD library** that manages project master plans and phase-based PRDs. Unlike Prometheus (which creates execution plans), TaskSuperstar organizes planning artifacts for future execution.
+Prologue v3.0 is a **hierarchical PRD library** that manages project master plans and chapter-based PRDs. Unlike Prometheus (which creates execution plans), Prologue organizes planning artifacts for future execution.
 
 ```
-[Project Master Plan] → [Phase PRDs] → /prometheus → Execute
+[Project Master Plan] → [Chapter PRDs] → /prometheus → Execute
 ```
 
 Part of the **Sisyphus Multi-Agent System**.
 
 ### Key Features
 
-- **Project-Based Organization**: Master plan + phase PRDs
-- **Incremental Phase Management**: Add phases as you go, not all upfront
-- **Independent Work Units**: Each phase = one executable Prometheus task
+- **Project-Based Organization**: Master plan + chapter PRDs
+- **Incremental Chapter Management**: Add chapters as you go, not all upfront
+- **Independent Work Units**: Each chapter = one executable Prometheus task
 - **Status Tracking**: planned → ready → in-progress → done
-- **Prometheus Integration**: Ready phases feed directly into Prometheus
+- **Prometheus Integration**: Ready chapters feed directly into Prometheus
 - **Inbox for Quick Ideas**: Capture standalone ideas outside projects
 
-### Key Concept: Phases ≠ Maturity Levels
+### Key Concept: Chapters ≠ Maturity Levels
 
-Phases are **independent work units**, not refinement stages:
-- All phases have the same level of detail
-- Phase numbers = execution order/priority
-- Add phases incrementally as you plan
+Chapters are **independent work units**, not refinement stages:
+- All chapters have the same level of detail
+- Chapter numbers = execution order/priority
+- Add chapters incrementally as you plan
 
 ## Installation
 
 ### Option 1: Copy to Claude skills folder
 
 ```bash
-git clone https://github.com/leejoonpyoo/claude-tasksuperstar.git
-cp -r claude-tasksuperstar ~/.claude/skills/tasksuperstar
+git clone https://github.com/leejoonpyoo/prologue.git
+cp -r prologue ~/.claude/skills/prologue
 ```
 
 ### Option 2: Symlink (recommended for development)
 
 ```bash
-git clone https://github.com/leejoonpyoo/claude-tasksuperstar.git
-ln -s $(pwd)/claude-tasksuperstar ~/.claude/skills/tasksuperstar
+git clone https://github.com/leejoonpyoo/prologue.git
+ln -s $(pwd)/prologue ~/.claude/skills/prologue
 ```
 
 ### Verify Installation
 
 ```bash
 # In Claude Code
-/tasksuperstar list
+/prologue list
 ```
 
 ## Quick Start
@@ -56,39 +56,39 @@ ln -s $(pwd)/claude-tasksuperstar ~/.claude/skills/tasksuperstar
 ### 1. Create a Project
 
 ```bash
-/tasksuperstar new ba-platform
+/prologue new ba-platform
 ```
 
 This creates:
-- `.tasksuperstar/ba-platform/_master.md` (master plan)
-- Updates `.tasksuperstar/index.md`
+- `.prologue/ba-platform/_master.md` (master plan)
+- Updates `.prologue/index.md`
 
-### 2. Add First Phase (when ready to detail it)
+### 2. Add First Chapter (when ready to detail it)
 
 ```bash
-/tasksuperstar add ba-platform foundation
+/prologue add ba-platform foundation
 ```
 
 This creates:
-- `.tasksuperstar/ba-platform/phase-01-foundation.md`
+- `.prologue/ba-platform/chapter-01-foundation.md`
 
-**Note**: Add phases incrementally. Don't plan all phases upfront.
+**Note**: Add chapters incrementally. Don't plan all chapters upfront.
 
 ### 3. Write Your PRDs
 
-Edit the generated files with your planning details. Each phase PRD includes a "Prometheus Context" section for easy handoff.
+Edit the generated files with your planning details. Each chapter PRD includes a "Prometheus Context" section for easy handoff.
 
-### 4. Mark Phase Ready
+### 4. Mark Chapter Ready
 
 ```bash
-/tasksuperstar status ba-platform foundation ready
+/prologue status ba-platform foundation ready
 ```
 
 ### 5. Execute with Prometheus
 
 ```bash
-/tasksuperstar run ba-platform foundation
-# Displays the phase PRD
+/prologue run ba-platform foundation
+# Displays the chapter PRD
 # Copy relevant parts for Prometheus
 
 /prometheus
@@ -98,32 +98,32 @@ Edit the generated files with your planning details. Each phase PRD includes a "
 ### 6. Mark Complete
 
 ```bash
-/tasksuperstar status ba-platform foundation done
+/prologue status ba-platform foundation done
 ```
 
 ## Commands Reference
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `new <project>` | Create project with master plan | `/tasksuperstar new ba-platform` |
-| `add <project> <phase>` | Add phase to project | `/tasksuperstar add ba-platform auth` |
-| `status <project> [phase] <status>` | Update status | `/tasksuperstar status ba-platform auth ready` |
-| `run <project> <phase>` | Display phase for execution | `/tasksuperstar run ba-platform auth` |
-| `inbox <name>` | Quick idea capture | `/tasksuperstar inbox mobile-app` |
-| `list [project]` | List projects or phases | `/tasksuperstar list` |
-| `show <project> [phase]` | Show details | `/tasksuperstar show ba-platform auth` |
-| `archive <project>` | Archive completed project | `/tasksuperstar archive ba-platform` |
-| `search <query>` | Search PRDs | `/tasksuperstar search authentication` |
+| `new <project>` | Create project with master plan | `/prologue new ba-platform` |
+| `add <project> <chapter>` | Add chapter to project | `/prologue add ba-platform auth` |
+| `status <project> [chapter] <status>` | Update status | `/prologue status ba-platform auth ready` |
+| `run <project> <chapter>` | Display chapter for execution | `/prologue run ba-platform auth` |
+| `inbox <name>` | Quick idea capture | `/prologue inbox mobile-app` |
+| `list [project]` | List projects or chapters | `/prologue list` |
+| `show <project> [chapter]` | Show details | `/prologue show ba-platform auth` |
+| `archive <project>` | Archive completed project | `/prologue archive ba-platform` |
+| `search <query>` | Search PRDs | `/prologue search authentication` |
 
 ## Folder Structure
 
 ```
-.tasksuperstar/
+.prologue/
 ├── _inbox/                     # Standalone ideas (system folder)
 ├── _archive/                   # Completed projects (system folder)
 ├── {project-name}/
 │   ├── _master.md              # Project master plan (vision, scope)
-│   └── phase-XX-xxx.md         # Phases added incrementally
+│   └── chapter-XX-xxx.md       # Chapters added incrementally
 └── index.md                    # Master index
 ```
 
@@ -138,7 +138,7 @@ planned → ready → in-progress → done
 - **in-progress**: Currently being executed
 - **done**: Completed
 
-Both projects and individual phases have status.
+Both projects and individual chapters have status.
 
 ## Templates
 
@@ -146,14 +146,14 @@ Both projects and individual phases have status.
 
 Each project has a master plan (`_master.md`) with:
 - Vision and scope
-- Phases table with status tracking
+- Chapters table with status tracking
 - Success criteria
 - High-level notes
 
-### Phase PRD
+### Chapter PRD
 
-Each phase has its own PRD (`phase-XX-name.md`) with:
-- Phase goal and scope
+Each chapter has its own PRD (`chapter-XX-name.md`) with:
+- Chapter goal and scope
 - Functional/non-functional requirements
 - Technical approach
 - Dependencies
@@ -168,13 +168,13 @@ Quick standalone ideas in `inbox/` with minimal structure:
 
 ## Integration with Sisyphus
 
-TaskSuperstar sits at the beginning of the planning → execution pipeline:
+Prologue sits at the beginning of the planning → execution pipeline:
 
 ```
-TaskSuperstar (PRD Library)
-    └── projects/{name}/_master.md + phase-XX.md
+Prologue (PRD Library)
+    └── projects/{name}/_master.md + chapter-XX.md
                               ↓
-                    /tasksuperstar run
+                    /prologue run
                               ↓
 Prometheus (Strategic Planning)
     └── .sisyphus/plans/{task}.md
@@ -192,61 +192,69 @@ Archive
 
 ```bash
 # 1. Start project with master plan only
-/tasksuperstar new ecommerce-platform
+/prologue new ecommerce-platform
 # → Edit _master.md: vision, overall scope, success criteria
 
-# 2. Plan and execute first phase
-/tasksuperstar add ecommerce-platform user-auth
-# → Edit phase-01-user-auth.md with detailed requirements
-/tasksuperstar status ecommerce-platform user-auth ready
-/tasksuperstar run ecommerce-platform user-auth
+# 2. Plan and execute first chapter
+/prologue add ecommerce-platform user-auth
+# → Edit chapter-01-user-auth.md with detailed requirements
+/prologue status ecommerce-platform user-auth ready
+/prologue run ecommerce-platform user-auth
 /prometheus  # Execute
 
-# 3. Complete first phase, add next
-/tasksuperstar status ecommerce-platform user-auth done
-/tasksuperstar add ecommerce-platform product-catalog
-# → Edit phase-02-product-catalog.md
+# 3. Complete first chapter, add next
+/prologue status ecommerce-platform user-auth done
+/prologue add ecommerce-platform product-catalog
+# → Edit chapter-02-product-catalog.md
 # → Repeat cycle...
 ```
 
-**Why incremental?** Requirements evolve. Earlier phases inform later ones. Plan each phase when you're ready to execute it.
+**Why incremental?** Requirements evolve. Earlier chapters inform later ones. Plan each chapter when you're ready to execute it.
 
 ## Example: Quick Idea Capture
 
 ```bash
 # Capture a quick idea
-/tasksuperstar inbox real-time-notifications
+/prologue inbox real-time-notifications
 
 # Later, promote to full project
-/tasksuperstar new real-time-notifications
-/tasksuperstar add real-time-notifications websocket-server
-/tasksuperstar add real-time-notifications client-library
+/prologue new real-time-notifications
+/prologue add real-time-notifications websocket-server
+/prologue add real-time-notifications client-library
 ```
 
 ## Best Practices
 
 1. **One project per major initiative**: Keep related work together
-2. **Phases = executable chunks**: Each phase should be independently executable with Prometheus
+2. **Chapters = executable chunks**: Each chapter should be independently executable with Prometheus
 3. **Write Prometheus Context**: Include a dedicated section for easy handoff
 4. **Use inbox liberally**: Capture ideas fast, organize later
-5. **Number phases logically**: 01, 02, 03... shows execution order
-6. **Update master plan**: Keep the phases table in sync
+5. **Number chapters logically**: 01, 02, 03... shows execution order
+6. **Update master plan**: Keep the chapters table in sync
 7. **Archive when done**: Clean active view, preserve history
 
-## Comparison: v1 vs v2
+## Migration from TaskSuperstar v2
 
-| Aspect | v1.0 | v2.0 |
-|--------|------|------|
-| Structure | Flat (ideas/drafts/ready) | Hierarchical (projects/phases) |
-| Use Case | Individual PRDs | Multi-phase projects |
-| Master Plan | None | Per-project _master.md |
-| Phases | No concept | Core feature with ordering |
-| Progression | idea → draft → ready | planned → ready → in-progress → done |
-| Best For | Small standalone ideas | Large complex projects |
+If you have existing `.tasksuperstar/` folders:
 
-**When to use each:**
-- Use v2.0 (current) for multi-phase projects
-- v1.0 pattern (inbox) still available for quick standalone ideas
+```bash
+# The migrate script will convert:
+# - .tasksuperstar/ → .prologue/
+# - phase-XX-*.md → chapter-XX-*.md
+/prologue migrate
+```
+
+## Comparison: v2 vs v3
+
+| Aspect | v2.0 (TaskSuperstar) | v3.0 (Prologue) |
+|--------|----------------------|-----------------|
+| Name | TaskSuperstar | Prologue |
+| Work Units | Phases | Chapters |
+| Folder | .tasksuperstar/ | .prologue/ |
+| Command | /tasksuperstar | /prologue |
+| Philosophy | Hierarchical PRD | Same (improved naming) |
+
+**Why the change?** "Prologue + Chapter" creates a cohesive literary metaphor: you write the prologue (master plan) and chapters (work units) of your project's story before executing it.
 
 ## Requirements
 
@@ -257,13 +265,13 @@ Archive
 ## Troubleshooting
 
 ### Commands not recognized
-Ensure the skill is in `~/.claude/skills/tasksuperstar/` and `SKILL.md` is present.
+Ensure the skill is in `~/.claude/skills/prologue/` and `SKILL.md` is present.
 
 ### Index not updating
 The index is auto-generated. If it's stale, check the hooks in SKILL.md are configured.
 
-### Phase numbering issues
-Phase numbers are auto-assigned based on creation order. Use leading zeros: `01`, `02`, etc.
+### Chapter numbering issues
+Chapter numbers are auto-assigned based on creation order. Use leading zeros: `01`, `02`, etc.
 
 ## Related Projects
 
@@ -280,6 +288,12 @@ MIT License
 Contributions welcome! Please open issues or PRs on GitHub.
 
 ## Changelog
+
+### v3.0.0 (2026-02-02)
+- Renamed from TaskSuperstar to Prologue
+- Changed "phase" terminology to "chapter"
+- Updated folder from .tasksuperstar/ to .prologue/
+- Improved literary metaphor: Prologue + Chapters
 
 ### v2.0.0 (2026-01-27)
 - Complete rewrite to hierarchical project/phase structure

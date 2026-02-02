@@ -10,14 +10,14 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 if [ -z "$QUERY" ]; then
-    echo "Usage: /tasksuperstar search <query>"
+    echo "Usage: /prologue search <query>"
     exit 1
 fi
 
-TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
+PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
 
-if [ ! -d "$TASKSUPERSTAR_DIR" ]; then
-    echo "TaskSuperstar not initialized"
+if [ ! -d "$PROLOGUE_DIR" ]; then
+    echo "Prologue not initialized"
     exit 1
 fi
 
@@ -25,8 +25,8 @@ echo -e "${BLUE}Searching for: $QUERY${NC}"
 echo ""
 
 # Search in all .md files
-grep -ril "$QUERY" "$TASKSUPERSTAR_DIR" --include="*.md" 2>/dev/null | while read -r file; do
-    REL_PATH="${file#$TASKSUPERSTAR_DIR/}"
+grep -ril "$QUERY" "$PROLOGUE_DIR" --include="*.md" 2>/dev/null | while read -r file; do
+    REL_PATH="${file#$PROLOGUE_DIR/}"
     echo -e "${GREEN}$REL_PATH${NC}"
     grep -in "$QUERY" "$file" | head -3 | sed 's/^/  /'
     echo ""

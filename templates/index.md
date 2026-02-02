@@ -1,21 +1,21 @@
-# TaskSuperstar Index
+# Prologue Index
 
 **Last Updated:** ${TIMESTAMP}
 
 ## Projects
 
-| Project | Phases | Status | Updated |
-|---------|--------|--------|---------|
+| Project | Chapters | Status | Updated |
+|---------|----------|--------|---------|
 
-_No projects yet. Create one with `/tasksuperstar new <project>`_
+_No projects yet. Create one with `/prologue new <project>`_
 
 ## Inbox
 
-_No ideas in inbox. Add with `/tasksuperstar inbox <name>`_
+_No ideas in inbox. Add with `/prologue inbox <name>`_
 
 ## Recently Archived
 
 _No archived items._
 
 ---
-*Auto-updated by TaskSuperstar*
+*Auto-updated by Prologue*

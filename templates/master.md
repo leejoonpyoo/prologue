@@ -13,10 +13,10 @@ updated: ${TIMESTAMP}
 - **IN**: What's included
 - **OUT**: What's excluded
 
-## Phases
+## Chapters
 
-| # | Phase | Status | PRD |
-|---|-------|--------|-----|
+| # | Chapter | Status | PRD |
+|---|---------|--------|-----|
 
 ## Success Criteria
 - [ ] Criteria 1

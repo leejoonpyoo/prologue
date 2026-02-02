@@ -1,5 +1,5 @@
 #!/bin/bash
-# List projects and phases
+# List projects and chapters
 # Usage: ./list.sh [project]
 
 PROJECT_ROOT="${PROJECT_ROOT:-.}"
@@ -11,16 +11,16 @@ YELLOW='\033[1;33m'
 GRAY='\033[0;90m'
 NC='\033[0m'
 
-TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
+PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
 
-if [ ! -d "$TASKSUPERSTAR_DIR" ]; then
-    echo "TaskSuperstar not initialized. Run /tasksuperstar init"
+if [ ! -d "$PROLOGUE_DIR" ]; then
+    echo "Prologue not initialized. Run /prologue init"
     exit 1
 fi
 
 if [ -n "$PROJECT_NAME" ]; then
-    # Show specific project's phases
-    PROJECT_DIR="$TASKSUPERSTAR_DIR/$PROJECT_NAME"
+    # Show specific project's chapters
+    PROJECT_DIR="$PROLOGUE_DIR/$PROJECT_NAME"
     if [ ! -d "$PROJECT_DIR" ]; then
         echo "Project '$PROJECT_NAME' not found"
         exit 1
@@ -35,12 +35,12 @@ if [ -n "$PROJECT_NAME" ]; then
     fi
 
     echo ""
-    echo "Phases:"
+    echo "Chapters:"
 
-    for phase in "$PROJECT_DIR"/phase-*.md; do
-        if [ -f "$phase" ]; then
-            BASENAME=$(basename "$phase" .md)
-            STATUS=$(grep "^status:" "$phase" | head -1 | cut -d' ' -f2)
+    for chapter in "$PROJECT_DIR"/chapter-*.md; do
+        if [ -f "$chapter" ]; then
+            BASENAME=$(basename "$chapter" .md)
+            STATUS=$(grep "^status:" "$chapter" | head -1 | cut -d' ' -f2)
             case "$STATUS" in
                 done) COLOR=$GRAY ;;
                 in-progress) COLOR=$YELLOW ;;
@@ -55,10 +55,10 @@ else
     echo -e "${BLUE}=== Projects ===${NC}"
     echo ""
 
-    for project_dir in "$TASKSUPERSTAR_DIR"/*/; do
+    for project_dir in "$PROLOGUE_DIR"/*/; do
         if [ -d "$project_dir" ] && [ "$(basename "$project_dir")" != "_inbox" ] && [ "$(basename "$project_dir")" != "_archive" ]; then
             PROJECT=$(basename "$project_dir")
-            PHASE_COUNT=$(ls -1 "$project_dir"/phase-*.md 2>/dev/null | wc -l | tr -d ' ')
+            CHAPTER_COUNT=$(ls -1 "$project_dir"/chapter-*.md 2>/dev/null | wc -l | tr -d ' ')
 
             if [ -f "$project_dir/_master.md" ]; then
                 STATUS=$(grep "^status:" "$project_dir/_master.md" | head -1 | cut -d' ' -f2)
@@ -66,7 +66,7 @@ else
                 STATUS="unknown"
             fi
 
-            echo -e "  ${GREEN}$PROJECT${NC} - $PHASE_COUNT phases [$STATUS]"
+            echo -e "  ${GREEN}$PROJECT${NC} - $CHAPTER_COUNT chapters [$STATUS]"
         fi
     done
 
@@ -74,7 +74,7 @@ else
     echo -e "${BLUE}=== Inbox ===${NC}"
     echo ""
 
-    INBOX_DIR="$TASKSUPERSTAR_DIR/_inbox"
+    INBOX_DIR="$PROLOGUE_DIR/_inbox"
     if [ -d "$INBOX_DIR" ]; then
         for idea in "$INBOX_DIR"/*.md; do
             if [ -f "$idea" ]; then

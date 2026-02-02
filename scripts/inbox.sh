@@ -15,12 +15,12 @@ NC='\033[0m'
 
 if [ -z "$NAME" ]; then
     echo -e "${RED}Error: Name required${NC}"
-    echo "Usage: /tasksuperstar inbox <name>"
+    echo "Usage: /prologue inbox <name>"
     exit 1
 fi
 
-TASKSUPERSTAR_DIR="$PROJECT_ROOT/.tasksuperstar"
-INBOX_DIR="$TASKSUPERSTAR_DIR/_inbox"
+PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+INBOX_DIR="$PROLOGUE_DIR/_inbox"
 
 mkdir -p "$INBOX_DIR"
 

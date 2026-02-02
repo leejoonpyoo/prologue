@@ -12,13 +12,40 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+
+# Find project directory by name (supports both old and new naming)
+find_project_dir() {
+    local name="$1"
+    local slug=$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')
+
+    # Try exact match first (old format)
+    if [ -d "$PROLOGUE_DIR/$name" ]; then
+        echo "$PROLOGUE_DIR/$name"
+        return
+    fi
+
+    # Try new format: *_slug
+    local found=$(find "$PROLOGUE_DIR" -maxdepth 1 -type d -name "*_${slug}" 2>/dev/null | head -1)
+    if [ -n "$found" ]; then
+        echo "$found"
+        return
+    fi
+
+    # Try partial match
+    found=$(find "$PROLOGUE_DIR" -maxdepth 1 -type d -name "*${slug}*" 2>/dev/null | head -1)
+    if [ -n "$found" ]; then
+        echo "$found"
+    fi
+}
+
 # Parse arguments
 if [ $# -eq 2 ]; then
-    PROJECT_NAME="$1"
+    PROJECT_INPUT="$1"
     CHAPTER=""
     NEW_STATUS="$2"
 elif [ $# -eq 3 ]; then
-    PROJECT_NAME="$1"
+    PROJECT_INPUT="$1"
     CHAPTER="$2"
     NEW_STATUS="$3"
 else
@@ -38,11 +65,10 @@ case "$NEW_STATUS" in
         ;;
 esac
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
-PROJECT_DIR="$PROLOGUE_DIR/$PROJECT_NAME"
+PROJECT_DIR=$(find_project_dir "$PROJECT_INPUT")
 
-if [ ! -d "$PROJECT_DIR" ]; then
-    echo -e "${RED}Project '$PROJECT_NAME' not found${NC}"
+if [ -z "$PROJECT_DIR" ] || [ ! -d "$PROJECT_DIR" ]; then
+    echo -e "${RED}Project '$PROJECT_INPUT' not found${NC}"
     exit 1
 fi
 

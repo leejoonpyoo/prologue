@@ -26,6 +26,17 @@ count_files() {
     fi
 }
 
+# Extract display name from folder (YYMMDD-NN_name -> name, or just name)
+get_display_name() {
+    local folder="$1"
+    # Check if it matches YYMMDD-NN_name pattern
+    if [[ "$folder" =~ ^[0-9]{6}-[0-9]{2}_ ]]; then
+        echo "$folder" | sed 's/^[0-9]*-[0-9]*_//'
+    else
+        echo "$folder"
+    fi
+}
+
 # Count projects
 PROJECT_COUNT=0
 if [ -d "$PROLOGUE_DIR" ]; then
@@ -47,19 +58,21 @@ INBOX_COUNT=$(count_files "$PROLOGUE_DIR/_inbox")
     if [ "$PROJECT_COUNT" -eq 0 ]; then
         echo "_No projects yet. Create one with \`/prologue new <project-name>\`_"
     else
-        for project_dir in "$PROLOGUE_DIR"/*/; do
-            if [ -d "$project_dir" ] && [ "$(basename "$project_dir")" != "_inbox" ] && [ "$(basename "$project_dir")" != "_archive" ]; then
-                PROJECT_NAME=$(basename "$project_dir")
+        # Sort projects by folder name (which includes date prefix)
+        for project_dir in $(find "$PROLOGUE_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "_inbox" -not -name "_archive" 2>/dev/null | sort); do
+            if [ -d "$project_dir" ]; then
+                PROJECT_FOLDER=$(basename "$project_dir")
+                PROJECT_DISPLAY=$(get_display_name "$PROJECT_FOLDER")
                 MASTER_FILE="$project_dir/_master.md"
 
                 if [ -f "$MASTER_FILE" ]; then
                     STATUS=$(grep "^status:" "$MASTER_FILE" | head -1 | cut -d' ' -f2 || echo "planned")
                     CHAPTER_COUNT=$(ls -1 "$project_dir"/chapter-*.md 2>/dev/null | wc -l | tr -d ' ')
 
-                    echo "### $PROJECT_NAME [$STATUS]"
+                    echo "### $PROJECT_FOLDER [$STATUS]"
                     echo ""
                     if [ "$CHAPTER_COUNT" -eq 0 ]; then
-                        echo "_No chapters yet. Add one with \`/prologue add $PROJECT_NAME <chapter-name>\`_"
+                        echo "_No chapters yet. Add one with \`/prologue add $PROJECT_DISPLAY <chapter-name>\`_"
                     else
                         echo "| # | Chapter | Status |"
                         echo "|---|---------|--------|"
@@ -105,13 +118,17 @@ INBOX_COUNT=$(count_files "$PROLOGUE_DIR/_inbox")
     # Recent archives
     echo "## Recently Archived"
     echo ""
-    ARCHIVES=($(find "$PROLOGUE_DIR/_archive" -maxdepth 1 -name "*.md" -type f 2>/dev/null | sort -r | head -5))
+    ARCHIVES=($(find "$PROLOGUE_DIR/_archive" -maxdepth 1 \( -name "*.md" -o -type d \) -not -name "_archive" 2>/dev/null | sort -r | head -5))
     if [ ${#ARCHIVES[@]} -eq 0 ]; then
         echo "_No archived items yet._"
     else
-        for file in "${ARCHIVES[@]}"; do
-            NAME=$(basename "$file" .md)
-            echo "- [x] $NAME"
+        for item in "${ARCHIVES[@]}"; do
+            NAME=$(basename "$item" .md)
+            if [ -d "$item" ]; then
+                echo "- [x] $NAME/ (project)"
+            else
+                echo "- [x] $NAME"
+            fi
         done
     fi
     echo ""

@@ -3,29 +3,55 @@
 # Usage: ./show.sh <project> [chapter]
 
 PROJECT_ROOT="${PROJECT_ROOT:-.}"
-PROJECT_NAME="$1"
+PROJECT_INPUT="$1"
 CHAPTER="$2"
 
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-if [ -z "$PROJECT_NAME" ]; then
+if [ -z "$PROJECT_INPUT" ]; then
     echo "Usage: /prologue show <project> [chapter]"
     exit 1
 fi
 
 PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
-PROJECT_DIR="$PROLOGUE_DIR/$PROJECT_NAME"
 
-# Check if it's an inbox item
-if [ -f "$PROLOGUE_DIR/_inbox/$PROJECT_NAME.md" ]; then
-    cat "$PROLOGUE_DIR/_inbox/$PROJECT_NAME.md"
+# Find project directory by name (supports both old and new naming)
+find_project_dir() {
+    local name="$1"
+    local slug=$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')
+
+    # Try exact match first (old format)
+    if [ -d "$PROLOGUE_DIR/$name" ]; then
+        echo "$PROLOGUE_DIR/$name"
+        return
+    fi
+
+    # Try new format: *_slug
+    local found=$(find "$PROLOGUE_DIR" -maxdepth 1 -type d -name "*_${slug}" 2>/dev/null | head -1)
+    if [ -n "$found" ]; then
+        echo "$found"
+        return
+    fi
+
+    # Try partial match
+    found=$(find "$PROLOGUE_DIR" -maxdepth 1 -type d -name "*${slug}*" 2>/dev/null | head -1)
+    if [ -n "$found" ]; then
+        echo "$found"
+    fi
+}
+
+# Check if it's an inbox item first
+if [ -f "$PROLOGUE_DIR/_inbox/$PROJECT_INPUT.md" ]; then
+    cat "$PROLOGUE_DIR/_inbox/$PROJECT_INPUT.md"
     exit 0
 fi
 
-if [ ! -d "$PROJECT_DIR" ]; then
-    echo -e "${RED}Project '$PROJECT_NAME' not found${NC}"
+PROJECT_DIR=$(find_project_dir "$PROJECT_INPUT")
+
+if [ -z "$PROJECT_DIR" ] || [ ! -d "$PROJECT_DIR" ]; then
+    echo -e "${RED}Project '$PROJECT_INPUT' not found${NC}"
     exit 1
 fi
 

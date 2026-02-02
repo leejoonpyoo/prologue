@@ -2,7 +2,7 @@
 
 name: prologue
 description: PRD library and brainstorming storage - save ideas before execution
-version: 3.0.0
+version: 3.1.0
 author: leejoonpyoo
 
 ## Overview
@@ -51,16 +51,23 @@ _master.md (전체 비전)
     └── chapter-03 (작업3) ─→ /prometheus ─→ 실행
 ```
 
+## Project Naming: YYMMDD-NN Format
+
+Projects are automatically organized with date-based naming:
+- Format: `YYMMDD-NN_project-name` (e.g., `260202-01_ba-platform`)
+- Sorted chronologically, same-day projects get sequential index
+- Reference projects by name only (e.g., `/prologue add ba-platform chapter`)
+
 ## Folder Structure
 
 ```
 .prologue/
-├── _inbox/                     # Standalone ideas (system folder)
-├── _archive/                   # Completed projects (system folder)
-├── {project-name}/
-│   ├── _master.md              # Project master plan (vision, scope)
-│   └── chapter-01-xxx.md       # Add chapters as needed
-└── index.md                    # Master index
+├── _inbox/                          # Standalone ideas
+├── _archive/                        # Completed projects
+├── YYMMDD-NN_project-name/          # Date-indexed projects
+│   ├── _master.md                   # Project master plan
+│   └── chapter-XX-xxx.md            # Chapters
+└── index.md                         # Master index
 ```
 
 ## Status Flow

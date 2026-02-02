@@ -3,7 +3,7 @@
 # Usage: ./list.sh [project]
 
 PROJECT_ROOT="${PROJECT_ROOT:-.}"
-PROJECT_NAME="$1"
+PROJECT_INPUT="$1"
 
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
@@ -18,15 +18,42 @@ if [ ! -d "$PROLOGUE_DIR" ]; then
     exit 1
 fi
 
-if [ -n "$PROJECT_NAME" ]; then
+# Find project directory by name (supports both old and new naming)
+find_project_dir() {
+    local name="$1"
+    local slug=$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')
+
+    # Try exact match first (old format)
+    if [ -d "$PROLOGUE_DIR/$name" ]; then
+        echo "$PROLOGUE_DIR/$name"
+        return
+    fi
+
+    # Try new format: *_slug
+    local found=$(find "$PROLOGUE_DIR" -maxdepth 1 -type d -name "*_${slug}" 2>/dev/null | head -1)
+    if [ -n "$found" ]; then
+        echo "$found"
+        return
+    fi
+
+    # Try partial match
+    found=$(find "$PROLOGUE_DIR" -maxdepth 1 -type d -name "*${slug}*" 2>/dev/null | head -1)
+    if [ -n "$found" ]; then
+        echo "$found"
+    fi
+}
+
+if [ -n "$PROJECT_INPUT" ]; then
     # Show specific project's chapters
-    PROJECT_DIR="$PROLOGUE_DIR/$PROJECT_NAME"
-    if [ ! -d "$PROJECT_DIR" ]; then
-        echo "Project '$PROJECT_NAME' not found"
+    PROJECT_DIR=$(find_project_dir "$PROJECT_INPUT")
+
+    if [ -z "$PROJECT_DIR" ] || [ ! -d "$PROJECT_DIR" ]; then
+        echo "Project '$PROJECT_INPUT' not found"
         exit 1
     fi
 
-    echo -e "${BLUE}Project: $PROJECT_NAME${NC}"
+    PROJECT_FOLDER=$(basename "$PROJECT_DIR")
+    echo -e "${BLUE}Project: $PROJECT_FOLDER${NC}"
 
     # Show master status
     if [ -f "$PROJECT_DIR/_master.md" ]; then
@@ -57,7 +84,7 @@ else
 
     for project_dir in "$PROLOGUE_DIR"/*/; do
         if [ -d "$project_dir" ] && [ "$(basename "$project_dir")" != "_inbox" ] && [ "$(basename "$project_dir")" != "_archive" ]; then
-            PROJECT=$(basename "$project_dir")
+            PROJECT_FOLDER=$(basename "$project_dir")
             CHAPTER_COUNT=$(ls -1 "$project_dir"/chapter-*.md 2>/dev/null | wc -l | tr -d ' ')
 
             if [ -f "$project_dir/_master.md" ]; then
@@ -66,7 +93,7 @@ else
                 STATUS="unknown"
             fi
 
-            echo -e "  ${GREEN}$PROJECT${NC} - $CHAPTER_COUNT chapters [$STATUS]"
+            echo -e "  ${GREEN}$PROJECT_FOLDER${NC} - $CHAPTER_COUNT chapters [$STATUS]"
         fi
     done
 

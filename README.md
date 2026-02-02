@@ -1,4 +1,4 @@
-# Claude Prologue
+# Prologue
 
 A Claude Code skill for hierarchical PRD (Product Requirements Document) library management. Plan complex multi-chapter projects before execution.
 
@@ -27,6 +27,14 @@ Chapters are **independent work units**, not refinement stages:
 - All chapters have the same level of detail
 - Chapter numbers = execution order/priority
 - Add chapters incrementally as you plan
+
+### Project Naming: YYMMDD-NN Format
+
+Projects are automatically organized with date-based naming:
+- Format: `YYMMDD-NN_project-name` (e.g., `260202-01_ba-platform`)
+- Sorted chronologically by default
+- Same-day projects get sequential index (01, 02, 03...)
+- Reference projects by name only: `/prologue add ba-platform chapter`
 
 ## Installation
 
@@ -60,7 +68,7 @@ ln -s $(pwd)/prologue ~/.claude/skills/prologue
 ```
 
 This creates:
-- `.prologue/ba-platform/_master.md` (master plan)
+- `.prologue/260202-01_ba-platform/_master.md` (with date-indexed folder)
 - Updates `.prologue/index.md`
 
 ### 2. Add First Chapter (when ready to detail it)
@@ -70,7 +78,9 @@ This creates:
 ```
 
 This creates:
-- `.prologue/ba-platform/chapter-01-foundation.md`
+- `.prologue/260202-01_ba-platform/chapter-01-foundation.md`
+
+**Note**: Reference projects by name (e.g., `ba-platform`), the system finds the full folder automatically.
 
 **Note**: Add chapters incrementally. Don't plan all chapters upfront.
 
@@ -119,12 +129,24 @@ Edit the generated files with your planning details. Each chapter PRD includes a
 
 ```
 .prologue/
-├── _inbox/                     # Standalone ideas (system folder)
-├── _archive/                   # Completed projects (system folder)
-├── {project-name}/
-│   ├── _master.md              # Project master plan (vision, scope)
-│   └── chapter-XX-xxx.md       # Chapters added incrementally
-└── index.md                    # Master index
+├── _inbox/                          # Standalone ideas (system folder)
+├── _archive/                        # Completed projects (system folder)
+├── YYMMDD-NN_project-name/          # Date-indexed project folders
+│   ├── _master.md                   # Project master plan (vision, scope)
+│   └── chapter-XX-xxx.md            # Chapters added incrementally
+└── index.md                         # Master index
+```
+
+Example:
+```
+.prologue/
+├── 260202-01_ba-platform/
+│   ├── _master.md
+│   ├── chapter-01-foundation.md
+│   └── chapter-02-api.md
+├── 260202-02_mobile-app/
+│   └── _master.md
+└── index.md
 ```
 
 ## Status Flow
@@ -233,16 +255,18 @@ Archive
 6. **Update master plan**: Keep the chapters table in sync
 7. **Archive when done**: Clean active view, preserve history
 
-## Migration from TaskSuperstar v2
+## Migration
 
-If you have existing `.tasksuperstar/` folders:
+### From TaskSuperstar v2 or older Prologue
 
 ```bash
-# The migrate script will convert:
-# - .tasksuperstar/ → .prologue/
-# - phase-XX-*.md → chapter-XX-*.md
 /prologue migrate
 ```
+
+The migrate script will:
+- Convert `.tasksuperstar/` → `.prologue/` (if applicable)
+- Rename `phase-XX-*.md` → `chapter-XX-*.md`
+- Convert `project-name/` → `YYMMDD-NN_project-name/` (uses created date from _master.md)
 
 ## Comparison: v2 vs v3
 
@@ -288,6 +312,13 @@ MIT License
 Contributions welcome! Please open issues or PRs on GitHub.
 
 ## Changelog
+
+### v3.1.0 (2026-02-02)
+- Added date-indexed project naming: `YYMMDD-NN_project-name`
+- Projects sorted chronologically by default
+- Same-day projects get sequential index
+- Reference projects by name only (auto-lookup)
+- Migration script updates existing projects to new format
 
 ### v3.0.0 (2026-02-02)
 - Renamed from TaskSuperstar to Prologue

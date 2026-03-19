@@ -75,11 +75,12 @@ Projects are automatically organized with date-based naming:
 ```
 planned → ready → in-progress → done
                        ↓
-                  /prometheus
+             /oh-my-claudecode:plan
+             → autopilot / ralph / team
 ```
 
 - **planned**: Initial state, still being written
-- **ready**: PRD complete, ready for Prometheus
+- **ready**: PRD complete, ready for execution
 - **in-progress**: Currently being executed
 - **done**: Completed
 
@@ -164,9 +165,9 @@ planned → ready → in-progress → done
 - [ ] Criterion 1
 - [ ] Criterion 2
 
-## Prometheus Context
+## Execution Context
 
-[When ready to execute, this section provides context for /prometheus]
+[When ready to execute, this section provides context for autopilot/ralph]
 
 **Background:** [Brief project context]
 **This Chapter:** [What to build in this chapter]
@@ -210,7 +211,7 @@ planned → ready → in-progress → done
 # 3. Mark ready and execute
 /prologue status ba-platform foundation ready
 /prologue run ba-platform foundation
-/prometheus  # Execute with Prometheus
+/oh-my-claudecode:autopilot  # or ralph / team
 
 # 4. Complete and add next chapter
 /prologue status ba-platform foundation done
@@ -220,19 +221,19 @@ planned → ready → in-progress → done
 
 **Incremental approach**: Don't plan all chapters upfront. Add each chapter as the previous one completes or when you're ready to detail it.
 
-## Integration with Sisyphus
+## Integration with OMC
 
 ```
 Prologue (PRD Library)
-    └── projects/{name}/_master.md + chapter-XX.md
-                              ↓
-                    /prologue run
-                              ↓
-Prometheus (Strategic Planning)
-    └── .sisyphus/plans/{task}.md
-                              ↓
-Sisyphus Agents (Execution)
-                              ↓
+    └── _master.md + chapter-XX.md
+                  ↓
+        /prologue run
+                  ↓
+OMC Planning (/oh-my-claudecode:plan)
+    └── .omc/plans/
+                  ↓
+OMC Execution (autopilot / ralph / team)
+                  ↓
 Archive
 ```
 
@@ -266,7 +267,7 @@ Archive
 
 ### Chapter Status
 - **planned**: PRD being written
-- **ready**: PRD complete, ready for Prometheus
+- **ready**: PRD complete, ready for execution
 - **in-progress**: Being executed
 - **done**: Completed
 
@@ -276,9 +277,3 @@ Change status with:
 /prologue status <project> <chapter> <status> # Chapter-level
 ```
 
-hooks:
-  PreToolUse:
-    - matcher: "Write|Edit"
-      hooks:
-        - type: command
-          command: "cat .prologue/index.md 2>/dev/null | head -30 || true"

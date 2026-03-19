@@ -4,21 +4,19 @@ A Claude Code skill for hierarchical PRD (Product Requirements Document) library
 
 ## What is this?
 
-Prologue v3.0 is a **hierarchical PRD library** that manages project master plans and chapter-based PRDs. Unlike Prometheus (which creates execution plans), Prologue organizes planning artifacts for future execution.
+Prologue v3.0 is a **hierarchical PRD library** that manages project master plans and chapter-based PRDs. Prologue organizes planning artifacts before handing off to OMC for execution.
 
 ```
-[Project Master Plan] → [Chapter PRDs] → /prometheus → Execute
+[Project Master Plan] → [Chapter PRDs] → /oh-my-claudecode:plan → Execute
 ```
-
-Part of the **Sisyphus Multi-Agent System**.
 
 ### Key Features
 
 - **Project-Based Organization**: Master plan + chapter PRDs
 - **Incremental Chapter Management**: Add chapters as you go, not all upfront
-- **Independent Work Units**: Each chapter = one executable Prometheus task
+- **Independent Work Units**: Each chapter = one executable OMC task
 - **Status Tracking**: planned → ready → in-progress → done
-- **Prometheus Integration**: Ready chapters feed directly into Prometheus
+- **OMC Integration**: Ready chapters feed directly into autopilot/ralph/team
 - **Inbox for Quick Ideas**: Capture standalone ideas outside projects
 
 ### Key Concept: Chapters ≠ Maturity Levels
@@ -86,7 +84,7 @@ This creates:
 
 ### 3. Write Your PRDs
 
-Edit the generated files with your planning details. Each chapter PRD includes a "Prometheus Context" section for easy handoff.
+Edit the generated files with your planning details. Each chapter PRD includes an "Execution Context" section for easy handoff.
 
 ### 4. Mark Chapter Ready
 
@@ -94,15 +92,14 @@ Edit the generated files with your planning details. Each chapter PRD includes a
 /prologue status ba-platform foundation ready
 ```
 
-### 5. Execute with Prometheus
+### 5. Execute with OMC
 
 ```bash
 /prologue run ba-platform foundation
 # Displays the chapter PRD
-# Copy relevant parts for Prometheus
 
-/prometheus
-# Paste PRD context and let Prometheus create execution plan
+/oh-my-claudecode:autopilot  # or ralph / team
+# Paste Execution Context and let OMC execute
 ```
 
 ### 6. Mark Complete
@@ -156,7 +153,7 @@ planned → ready → in-progress → done
 ```
 
 - **planned**: Initial state, still being written
-- **ready**: PRD complete, ready for Prometheus
+- **ready**: PRD complete, ready for execution
 - **in-progress**: Currently being executed
 - **done**: Completed
 
@@ -179,7 +176,7 @@ Each chapter has its own PRD (`chapter-XX-name.md`) with:
 - Functional/non-functional requirements
 - Technical approach
 - Dependencies
-- **Prometheus Context** section for easy handoff
+- **Execution Context** section for easy handoff
 
 ### Inbox Ideas
 
@@ -188,26 +185,22 @@ Quick standalone ideas in `inbox/` with minimal structure:
 - Why: Why this matters
 - Notes: Additional thoughts
 
-## Integration with Sisyphus
+## Integration with OMC
 
 Prologue sits at the beginning of the planning → execution pipeline:
 
 ```
 Prologue (PRD Library)
-    └── projects/{name}/_master.md + chapter-XX.md
-                              ↓
-                    /prologue run
-                              ↓
-Prometheus (Strategic Planning)
-    └── .sisyphus/plans/{task}.md
-                              ↓
-planning-with-files (Execution Context)
-    └── .sisyphus/active/{task}/
-                              ↓
-Sisyphus Agents (Execution)
-                              ↓
+    └── _master.md + chapter-XX.md
+                  ↓
+        /prologue run
+                  ↓
+OMC Planning (/oh-my-claudecode:plan)
+    └── .omc/plans/
+                  ↓
+OMC Execution (autopilot / ralph / team)
+                  ↓
 Archive
-    └── .sisyphus/archive/YYYY-MM-DD_{task}/
 ```
 
 ## Example: Incremental Project Development
@@ -222,7 +215,7 @@ Archive
 # → Edit chapter-01-user-auth.md with detailed requirements
 /prologue status ecommerce-platform user-auth ready
 /prologue run ecommerce-platform user-auth
-/prometheus  # Execute
+/oh-my-claudecode:autopilot  # or ralph / team
 
 # 3. Complete first chapter, add next
 /prologue status ecommerce-platform user-auth done
@@ -248,8 +241,8 @@ Archive
 ## Best Practices
 
 1. **One project per major initiative**: Keep related work together
-2. **Chapters = executable chunks**: Each chapter should be independently executable with Prometheus
-3. **Write Prometheus Context**: Include a dedicated section for easy handoff
+2. **Chapters = executable chunks**: Each chapter should be independently executable with OMC
+3. **Write Execution Context**: Include a dedicated section for easy handoff
 4. **Use inbox liberally**: Capture ideas fast, organize later
 5. **Number chapters logically**: 01, 02, 03... shows execution order
 6. **Update master plan**: Keep the chapters table in sync
@@ -283,8 +276,7 @@ The migrate script will:
 ## Requirements
 
 - Claude Code CLI
-- (Optional) Prometheus agent for execution planning
-- (Optional) planning-with-files skill for execution context
+- (Optional) oh-my-claudecode plugin for OMC execution
 
 ## Troubleshooting
 
@@ -299,9 +291,7 @@ Chapter numbers are auto-assigned based on creation order. Use leading zeros: `0
 
 ## Related Projects
 
-- [claude-task-planning](https://github.com/leejoonpyoo/claude-task-planning) - Execution context management
-- [Sisyphus Multi-Agent System](https://github.com/leejoonpyoo/sisyphus) - Full orchestration system
-- [Prometheus Agent](https://github.com/leejoonpyoo/prometheus) - Strategic planning agent
+- [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) - OMC multi-agent orchestration layer
 
 ## License
 

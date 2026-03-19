@@ -1,25 +1,24 @@
 # prd-manager Skill
 
 name: prd-manager
-description: Hierarchical PRD library - decompose complex projects into executable chapters
-version: 3.1.0
+description: When a complex project idea needs to be broken down into independently executable PRD chapters before handing off to OMC for execution
+version: 4.0.0
 author: leejoonpyoo
 
 ## Overview
 
-prd-manager is a **hierarchical PRD (Product Requirements Document) library** for planning before execution. It manages project master plans and chapter-based PRDs that feed into Prometheus for implementation.
+prd-manager is a **hierarchical PRD library** for decomposing complex projects into independently executable chapters. Each chapter is a self-contained PRD that can be handed off to OMC (autopilot / ralph / team) for execution.
 
 ```
-[Project Master Plan] → [Chapter PRDs] → /prometheus → Execute
+[Project Master Plan] → [Chapter PRDs] → /oh-my-claudecode:plan → Execute
 ```
 
 ## When to Use
 
-- Planning large projects with multiple chapters
-- Breaking down complex work into executable chunks
-- Building a library of project plans
-- Preparing PRDs before Prometheus execution
-- Storing standalone ideas for future reference
+- A complex project idea needs to be broken down before execution
+- Managing multiple PRD chapters across a large initiative
+- Building a library of project plans with status tracking
+- Capturing standalone ideas for future planning
 
 ## Commands
 

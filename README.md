@@ -1,10 +1,10 @@
-# Prologue
+# prd-manager
 
 A Claude Code skill for hierarchical PRD (Product Requirements Document) library management. Plan complex multi-chapter projects before execution.
 
 ## What is this?
 
-Prologue v3.0 is a **hierarchical PRD library** that manages project master plans and chapter-based PRDs. Prologue organizes planning artifacts before handing off to OMC for execution.
+prd-manager v3.0 is a **hierarchical PRD library** that manages project master plans and chapter-based PRDs. prd-manager organizes planning artifacts before handing off to OMC for execution.
 
 ```
 [Project Master Plan] → [Chapter PRDs] → /oh-my-claudecode:plan → Execute
@@ -32,29 +32,29 @@ Projects are automatically organized with date-based naming:
 - Format: `YYMMDD-NN_project-name` (e.g., `260202-01_ba-platform`)
 - Sorted chronologically by default
 - Same-day projects get sequential index (01, 02, 03...)
-- Reference projects by name only: `/prologue add ba-platform chapter`
+- Reference projects by name only: `/prd-manager add ba-platform chapter`
 
 ## Installation
 
 ### Option 1: Copy to Claude skills folder
 
 ```bash
-git clone https://github.com/leejoonpyoo/prologue.git
-cp -r prologue ~/.claude/skills/prologue
+git clone https://github.com/leejoonpyoo/prd-manager.git
+cp -r prologue ~/.claude/skills/prd-manager
 ```
 
 ### Option 2: Symlink (recommended for development)
 
 ```bash
-git clone https://github.com/leejoonpyoo/prologue.git
-ln -s $(pwd)/prologue ~/.claude/skills/prologue
+git clone https://github.com/leejoonpyoo/prd-manager.git
+ln -s $(pwd)/prd-manager ~/.claude/skills/prd-manager
 ```
 
 ### Verify Installation
 
 ```bash
 # In Claude Code
-/prologue list
+/prd-manager list
 ```
 
 ## Quick Start
@@ -62,7 +62,7 @@ ln -s $(pwd)/prologue ~/.claude/skills/prologue
 ### 1. Create a Project
 
 ```bash
-/prologue new ba-platform
+/prd-manager new ba-platform
 ```
 
 This creates:
@@ -72,7 +72,7 @@ This creates:
 ### 2. Add First Chapter (when ready to detail it)
 
 ```bash
-/prologue add ba-platform foundation
+/prd-manager add ba-platform foundation
 ```
 
 This creates:
@@ -89,13 +89,13 @@ Edit the generated files with your planning details. Each chapter PRD includes a
 ### 4. Mark Chapter Ready
 
 ```bash
-/prologue status ba-platform foundation ready
+/prd-manager status ba-platform foundation ready
 ```
 
 ### 5. Execute with OMC
 
 ```bash
-/prologue run ba-platform foundation
+/prd-manager run ba-platform foundation
 # Displays the chapter PRD
 
 /oh-my-claudecode:autopilot  # or ralph / team
@@ -105,22 +105,22 @@ Edit the generated files with your planning details. Each chapter PRD includes a
 ### 6. Mark Complete
 
 ```bash
-/prologue status ba-platform foundation done
+/prd-manager status ba-platform foundation done
 ```
 
 ## Commands Reference
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `new <project>` | Create project with master plan | `/prologue new ba-platform` |
-| `add <project> <chapter>` | Add chapter to project | `/prologue add ba-platform auth` |
-| `status <project> [chapter] <status>` | Update status | `/prologue status ba-platform auth ready` |
-| `run <project> <chapter>` | Display chapter for execution | `/prologue run ba-platform auth` |
-| `inbox <name>` | Quick idea capture | `/prologue inbox mobile-app` |
-| `list [project]` | List projects or chapters | `/prologue list` |
-| `show <project> [chapter]` | Show details | `/prologue show ba-platform auth` |
-| `archive <project>` | Archive completed project | `/prologue archive ba-platform` |
-| `search <query>` | Search PRDs | `/prologue search authentication` |
+| `new <project>` | Create project with master plan | `/prd-manager new ba-platform` |
+| `add <project> <chapter>` | Add chapter to project | `/prd-manager add ba-platform auth` |
+| `status <project> [chapter] <status>` | Update status | `/prd-manager status ba-platform auth ready` |
+| `run <project> <chapter>` | Display chapter for execution | `/prd-manager run ba-platform auth` |
+| `inbox <name>` | Quick idea capture | `/prd-manager inbox mobile-app` |
+| `list [project]` | List projects or chapters | `/prd-manager list` |
+| `show <project> [chapter]` | Show details | `/prd-manager show ba-platform auth` |
+| `archive <project>` | Archive completed project | `/prd-manager archive ba-platform` |
+| `search <query>` | Search PRDs | `/prd-manager search authentication` |
 
 ## Folder Structure
 
@@ -187,13 +187,13 @@ Quick standalone ideas in `inbox/` with minimal structure:
 
 ## Integration with OMC
 
-Prologue sits at the beginning of the planning → execution pipeline:
+prd-manager sits at the beginning of the planning → execution pipeline:
 
 ```
-Prologue (PRD Library)
+prd-manager (PRD Library)
     └── _master.md + chapter-XX.md
                   ↓
-        /prologue run
+        /prd-manager run
                   ↓
 OMC Planning (/oh-my-claudecode:plan)
     └── .omc/plans/
@@ -207,19 +207,19 @@ Archive
 
 ```bash
 # 1. Start project with master plan only
-/prologue new ecommerce-platform
+/prd-manager new ecommerce-platform
 # → Edit _master.md: vision, overall scope, success criteria
 
 # 2. Plan and execute first chapter
-/prologue add ecommerce-platform user-auth
+/prd-manager add ecommerce-platform user-auth
 # → Edit chapter-01-user-auth.md with detailed requirements
-/prologue status ecommerce-platform user-auth ready
-/prologue run ecommerce-platform user-auth
+/prd-manager status ecommerce-platform user-auth ready
+/prd-manager run ecommerce-platform user-auth
 /oh-my-claudecode:autopilot  # or ralph / team
 
 # 3. Complete first chapter, add next
-/prologue status ecommerce-platform user-auth done
-/prologue add ecommerce-platform product-catalog
+/prd-manager status ecommerce-platform user-auth done
+/prd-manager add ecommerce-platform product-catalog
 # → Edit chapter-02-product-catalog.md
 # → Repeat cycle...
 ```
@@ -230,12 +230,12 @@ Archive
 
 ```bash
 # Capture a quick idea
-/prologue inbox real-time-notifications
+/prd-manager inbox real-time-notifications
 
 # Later, promote to full project
-/prologue new real-time-notifications
-/prologue add real-time-notifications websocket-server
-/prologue add real-time-notifications client-library
+/prd-manager new real-time-notifications
+/prd-manager add real-time-notifications websocket-server
+/prd-manager add real-time-notifications client-library
 ```
 
 ## Best Practices
@@ -248,31 +248,6 @@ Archive
 6. **Update master plan**: Keep the chapters table in sync
 7. **Archive when done**: Clean active view, preserve history
 
-## Migration
-
-### From TaskSuperstar v2 or older Prologue
-
-```bash
-/prologue migrate
-```
-
-The migrate script will:
-- Convert `.tasksuperstar/` → `.prologue/` (if applicable)
-- Rename `phase-XX-*.md` → `chapter-XX-*.md`
-- Convert `project-name/` → `YYMMDD-NN_project-name/` (uses created date from _master.md)
-
-## Comparison: v2 vs v3
-
-| Aspect | v2.0 (TaskSuperstar) | v3.0 (Prologue) |
-|--------|----------------------|-----------------|
-| Name | TaskSuperstar | Prologue |
-| Work Units | Phases | Chapters |
-| Folder | .tasksuperstar/ | .prologue/ |
-| Command | /tasksuperstar | /prologue |
-| Philosophy | Hierarchical PRD | Same (improved naming) |
-
-**Why the change?** "Prologue + Chapter" creates a cohesive literary metaphor: you write the prologue (master plan) and chapters (work units) of your project's story before executing it.
-
 ## Requirements
 
 - Claude Code CLI
@@ -281,7 +256,7 @@ The migrate script will:
 ## Troubleshooting
 
 ### Commands not recognized
-Ensure the skill is in `~/.claude/skills/prologue/` and `SKILL.md` is present.
+Ensure the skill is in `~/.claude/skills/prd-manager/` and `SKILL.md` is present.
 
 ### Index not updating
 The index is auto-generated. If it's stale, check the hooks in SKILL.md are configured.
@@ -303,26 +278,16 @@ Contributions welcome! Please open issues or PRs on GitHub.
 
 ## Changelog
 
+### v4.0.0 (2026-03-19)
+- Renamed from prd-manager to prd-manager
+- Removed Sisyphus/Prometheus legacy references
+- Updated to OMC workflow (autopilot / ralph / team)
+
 ### v3.1.0 (2026-02-02)
 - Added date-indexed project naming: `YYMMDD-NN_project-name`
 - Projects sorted chronologically by default
 - Same-day projects get sequential index
 - Reference projects by name only (auto-lookup)
-- Migration script updates existing projects to new format
-
-### v3.0.0 (2026-02-02)
-- Renamed from TaskSuperstar to Prologue
-- Changed "phase" terminology to "chapter"
-- Updated folder from .tasksuperstar/ to .prologue/
-- Improved literary metaphor: Prologue + Chapters
-
-### v2.0.0 (2026-01-27)
-- Complete rewrite to hierarchical project/phase structure
-- Added master plan concept
-- Removed flat ideas/drafts/ready structure
-- Added project-level and phase-level status
-- Added inbox for quick standalone ideas
-- Enhanced Prometheus integration with context sections
 
 ### v1.0.0 (2026-01-20)
-- Initial release with flat PRD library structure
+- Initial release with hierarchical PRD library structure

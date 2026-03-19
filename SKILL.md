@@ -1,13 +1,13 @@
-# Prologue Skill
+# prd-manager Skill
 
-name: prologue
-description: PRD library and brainstorming storage - save ideas before execution
+name: prd-manager
+description: Hierarchical PRD library - decompose complex projects into executable chapters
 version: 3.1.0
 author: leejoonpyoo
 
 ## Overview
 
-Prologue is a **hierarchical PRD (Product Requirements Document) library** for planning before execution. It manages project master plans and chapter-based PRDs that feed into Prometheus for implementation.
+prd-manager is a **hierarchical PRD (Product Requirements Document) library** for planning before execution. It manages project master plans and chapter-based PRDs that feed into Prometheus for implementation.
 
 ```
 [Project Master Plan] → [Chapter PRDs] → /prometheus → Execute
@@ -25,15 +25,15 @@ Prologue is a **hierarchical PRD (Product Requirements Document) library** for p
 
 | Command | Description |
 |---------|-------------|
-| `/prologue new <project>` | Create new project with master plan |
-| `/prologue add <project> <chapter>` | Add chapter PRD to project |
-| `/prologue status <project> [chapter] <status>` | Change status (planned/ready/in-progress/done) |
-| `/prologue run <project> <chapter>` | Prepare chapter for Prometheus |
-| `/prologue inbox <name>` | Quick standalone idea |
-| `/prologue list [project]` | List projects or chapters |
-| `/prologue show <project> [chapter]` | Show details |
-| `/prologue archive <project>` | Archive completed project |
-| `/prologue search <query>` | Search all PRDs |
+| `/prd-manager new <project>` | Create new project with master plan |
+| `/prd-manager add <project> <chapter>` | Add chapter PRD to project |
+| `/prd-manager status <project> [chapter] <status>` | Change status (planned/ready/in-progress/done) |
+| `/prd-manager run <project> <chapter>` | Prepare chapter for Prometheus |
+| `/prd-manager inbox <name>` | Quick standalone idea |
+| `/prd-manager list [project]` | List projects or chapters |
+| `/prd-manager show <project> [chapter]` | Show details |
+| `/prd-manager archive <project>` | Archive completed project |
+| `/prd-manager search <query>` | Search all PRDs |
 
 ## Key Concept: Chapters
 
@@ -56,7 +56,7 @@ _master.md (전체 비전)
 Projects are automatically organized with date-based naming:
 - Format: `YYMMDD-NN_project-name` (e.g., `260202-01_ba-platform`)
 - Sorted chronologically, same-day projects get sequential index
-- Reference projects by name only (e.g., `/prologue add ba-platform chapter`)
+- Reference projects by name only (e.g., `/prd-manager add ba-platform chapter`)
 
 ## Folder Structure
 
@@ -201,21 +201,21 @@ planned → ready → in-progress → done
 
 ```bash
 # 1. Create project (starts with _master.md only)
-/prologue new ba-platform
+/prd-manager new ba-platform
 # → Edit _master.md with vision, scope, success criteria
 
 # 2. Add first chapter when ready to plan it
-/prologue add ba-platform foundation
+/prd-manager add ba-platform foundation
 # → Edit chapter-01-foundation.md with detailed requirements
 
 # 3. Mark ready and execute
-/prologue status ba-platform foundation ready
-/prologue run ba-platform foundation
+/prd-manager status ba-platform foundation ready
+/prd-manager run ba-platform foundation
 /oh-my-claudecode:autopilot  # or ralph / team
 
 # 4. Complete and add next chapter
-/prologue status ba-platform foundation done
-/prologue add ba-platform core-engine  # Add next chapter when needed
+/prd-manager status ba-platform foundation done
+/prd-manager add ba-platform core-engine  # Add next chapter when needed
 # → Repeat cycle
 ```
 
@@ -224,10 +224,10 @@ planned → ready → in-progress → done
 ## Integration with OMC
 
 ```
-Prologue (PRD Library)
+prd-manager (PRD Library)
     └── _master.md + chapter-XX.md
                   ↓
-        /prologue run
+        /prd-manager run
                   ↓
 OMC Planning (/oh-my-claudecode:plan)
     └── .omc/plans/
@@ -251,10 +251,10 @@ Archive
 
 | Aspect | v2.0 | v3.0 |
 |--------|------|------|
-| Name | TaskSuperstar | Prologue |
+| Name | TaskSuperstar | prd-manager |
 | Work Units | Phases | Chapters |
 | Folder | .tasksuperstar/ | .prologue/ |
-| Command | /tasksuperstar | /prologue |
+| Command | /tasksuperstar | /prd-manager |
 | Philosophy | Same | Same (improved naming) |
 
 ## Status Management
@@ -273,7 +273,7 @@ Archive
 
 Change status with:
 ```bash
-/prologue status <project> <status>        # Project-level
-/prologue status <project> <chapter> <status> # Chapter-level
+/prd-manager status <project> <status>        # Project-level
+/prd-manager status <project> <chapter> <status> # Chapter-level
 ```
 

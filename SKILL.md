@@ -93,6 +93,8 @@ Before marking a chapter ready, verify it's truly executable:
 
 Point out vague or missing sections explicitly. Only recommend marking ready when all of the above are met.
 
+**High-risk chapters** (auth/security, data migration, breaking API changes, production-impacting): spawn `Task(subagent_type="oh-my-claudecode:critic", ...)` for an independent review pass. Tell the user: "고위험 chapter로 판단하여 Critic 리뷰를 추가로 실행합니다." Apply the Critic's feedback before recommending ready.
+
 ### `run` — Execution Handoff
 
 This replaces `/oh-my-claudecode:plan` for managed projects. Do NOT write to `.omc/plans/`.

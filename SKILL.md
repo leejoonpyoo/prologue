@@ -51,7 +51,8 @@ Project → Chapters (PRDs) → Execute → Progress Tracking → Next Chapter
 │   ├── _master.md                       # Project vision & chapter registry (the plan)
 │   ├── _progress.md                     # Execution reality & resume context
 │   └── chapter-XX-xxx.md               # Chapter PRDs (added incrementally)
-└── index.md                             # Master index
+├── index.md                             # Master index
+└── todo.md                              # Active chapter execution checklist (run으로 생성)
 ```
 
 ## Project Naming: YYMMDD-NN Format
@@ -103,12 +104,16 @@ This replaces `/oh-my-claudecode:plan` for managed projects. Do NOT write to `.o
 2. Read `_master.md` and the chapter PRD
 3. Read `_progress.md` if it exists — check for prior context on this chapter
 4. Create or update `_progress.md`: add/refresh the "현재 진행 중" section for this chapter
-5. Output an execution summary:
+5. Create or overwrite `.prd-manager/todo.md` from the chapter PRD:
+   - Map chapter's Requirements → task checklist items
+   - Map chapter's Success Criteria → acceptance criteria section
+   - Add standard execution steps (설계 → 구현 → 테스트 → 검증)
+6. Output an execution summary:
    - What this chapter builds and why
    - Key constraints and dependencies from prior chapters
    - Concrete starting point
    - Recommended OMC mode: `autopilot` (autonomous), `ralph` (with review loop), `team` (multi-agent)
-6. Tell the user: "실행 준비 완료. `/oh-my-claudecode:autopilot` (또는 ralph/team) 실행하세요. 세션 중 컨텍스트 복원이 필요하면 `_progress.md`를 프롬프트에 첨부하세요."
+7. Tell the user: "실행 준비 완료. `/oh-my-claudecode:autopilot` (또는 ralph/team) 실행하세요. 세션 중 컨텍스트 복원이 필요하면 `_progress.md`를 프롬프트에 첨부하세요."
 
 ### `update` — Progress Capture
 
@@ -119,7 +124,8 @@ After an execution session, capture what happened:
    - Move completed items to "완료된 것"
    - Update "진행 중" and "다음 세션 시작점"
    - Record new decisions in "결정 사항"
-3. If the chapter is fully done, prompt: "`/prd-manager status <project> <chapter> done` 실행할까요?"
+3. Update `.prd-manager/todo.md`: check off completed items based on what the user reported
+4. If the chapter is fully done, prompt: "`/prd-manager status <project> <chapter> done` 실행할까요?"
 
 ### `inbox` — Quick Capture
 
@@ -270,6 +276,32 @@ prd-manager
 
 ### chapter-01-{name} (done, {date})
 실제로 만들어진 것 요약 + 주요 결정
+```
+
+### todo.md
+
+```markdown
+# Todo: {chapter-name}
+**Project:** {project-name}
+**Chapter:** {XX}
+**Generated:** {timestamp}
+
+## Acceptance Criteria
+- [ ] (chapter Success Criteria에서 복사)
+
+## Tasks
+- [ ] 목표 + acceptance criteria 재서술
+- [ ] 기존 구현/패턴 위치 파악
+- [ ] 설계: 최소 접근법 + 주요 결정
+- [ ] 가장 안전한 슬라이스 구현
+- [ ] 테스트 추가/조정
+- [ ] 검증 실행 (lint/tests/build/manual)
+- [ ] 변경사항 + 검증 스토리 요약
+- [ ] 교훈 기록 (있을 경우)
+
+## Requirements
+- [ ] FR1: (chapter Functional Requirements에서 복사)
+- [ ] NFR1: (chapter Non-Functional Requirements에서 복사)
 ```
 
 ### _inbox/xxx.md

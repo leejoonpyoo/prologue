@@ -1,36 +1,34 @@
-# prd-manager Skill
-
+---
 name: prd-manager
-description: When a complex project idea needs to be broken down into independently executable PRD chapters before handing off to OMC for execution
-version: 4.0.0
+description: Manage complex projects as hierarchical PRD libraries — master plan, executable chapters, and progress tracking. Use when planning a multi-step project, breaking an initiative into independently executable chunks, tracking execution progress across sessions, capturing quick ideas, or preparing work for OMC (autopilot/ralph/team). This skill handles the full planning → execution lifecycle so you don't need /oh-my-claudecode:plan separately for managed projects.
+version: 5.0.0
 author: leejoonpyoo
+---
 
 ## Overview
 
-prd-manager is a **hierarchical PRD library** for decomposing complex projects into independently executable chapters. Each chapter is a self-contained PRD that can be handed off to OMC (autopilot / ralph / team) for execution.
+prd-manager manages projects as two distinct documents:
+
+- `_master.md` — what you **planned** to build (vision, scope, chapters)
+- `_progress.md` — what **actually happened** (execution state, decisions, resume point)
 
 ```
-[Project Master Plan] → [Chapter PRDs] → /oh-my-claudecode:plan → Execute
+Project → Chapters (PRDs) → Execute → Progress Tracking → Next Chapter
 ```
-
-## When to Use
-
-- A complex project idea needs to be broken down before execution
-- Managing multiple PRD chapters across a large initiative
-- Building a library of project plans with status tracking
-- Capturing standalone ideas for future planning
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/prd-manager new <project>` | Create new project with master plan |
-| `/prd-manager add <project> <chapter>` | Add chapter PRD to project |
+| `/prd-manager new <project>` | AI interview → creates project + drafts `_master.md` |
+| `/prd-manager add <project> <chapter>` | AI drafts chapter PRD from master plan context |
+| `/prd-manager review <project> <chapter>` | AI reviews PRD completeness → ready to execute? |
+| `/prd-manager run <project> <chapter>` | Prepares execution context + creates/updates `_progress.md` |
+| `/prd-manager update <project> [chapter]` | AI updates `_progress.md` from current session |
 | `/prd-manager status <project> [chapter] <status>` | Change status (planned/ready/in-progress/done) |
-| `/prd-manager run <project> <chapter>` | Prepare chapter for Prometheus |
-| `/prd-manager inbox <name>` | Quick standalone idea |
+| `/prd-manager inbox <name>` | Quick idea capture (AI-assisted) |
 | `/prd-manager list [project]` | List projects or chapters |
-| `/prd-manager show <project> [chapter]` | Show details |
+| `/prd-manager show <project> [chapter]` | Show PRD content |
 | `/prd-manager archive <project>` | Archive completed project |
 | `/prd-manager search <query>` | Search all PRDs |
 
@@ -39,53 +37,126 @@ prd-manager is a **hierarchical PRD library** for decomposing complex projects i
 **Chapters are independent work units, NOT refinement stages.**
 
 - All chapters have the same level of detail (fully executable PRDs)
-- Chapter numbers indicate execution order/priority, not maturity
-- Each chapter = one Prometheus run
-- Add chapters incrementally as you plan, not all upfront
-
-```
-_master.md (전체 비전)
-    ├── chapter-01 (작업1) ─→ /prometheus ─→ 실행
-    ├── chapter-02 (작업2) ─→ /prometheus ─→ 실행
-    └── chapter-03 (작업3) ─→ /prometheus ─→ 실행
-```
-
-## Project Naming: YYMMDD-NN Format
-
-Projects are automatically organized with date-based naming:
-- Format: `YYMMDD-NN_project-name` (e.g., `260202-01_ba-platform`)
-- Sorted chronologically, same-day projects get sequential index
-- Reference projects by name only (e.g., `/prd-manager add ba-platform chapter`)
+- Chapter numbers = execution order, not maturity
+- Each chapter = one OMC session
+- Add chapters incrementally — not all upfront
 
 ## Folder Structure
 
 ```
-.prologue/
-├── _inbox/                          # Standalone ideas
-├── _archive/                        # Completed projects
-├── YYMMDD-NN_project-name/          # Date-indexed projects
-│   ├── _master.md                   # Project master plan
-│   └── chapter-XX-xxx.md            # Chapters
-└── index.md                         # Master index
+.prd-manager/
+├── _inbox/                              # Standalone ideas
+├── _archive/                            # Completed projects
+├── YYMMDD-NN_project-name/
+│   ├── _master.md                       # Project vision & chapter registry (the plan)
+│   ├── _progress.md                     # Execution reality & resume context
+│   └── chapter-XX-xxx.md               # Chapter PRDs (added incrementally)
+└── index.md                             # Master index
 ```
+
+## Project Naming: YYMMDD-NN Format
+
+- Format: `YYMMDD-NN_project-name` (e.g., `260202-01_ba-platform`)
+- Sorted chronologically; same-day projects get sequential index
+- Reference projects by name only — the system resolves the full folder
+
+## AI Workflows
+
+### `new` — Project Interview
+
+Interview the user to draft `_master.md` rather than leaving them with a blank template:
+
+1. "이 프로젝트는 무엇을 하나요? (1-2문장)"
+2. "주요 deliverable은 무엇인가요?"
+3. "스코프 외 항목이 있나요?"
+4. Propose a natural chapter breakdown based on the answers
+5. Run `scripts/new.sh` to create the folder, then write the drafted content into `_master.md`
+
+### `add` — Chapter Drafting
+
+Don't create an empty template — use project context to draft a meaningful starting point:
+
+1. Read `_master.md` for vision, scope, and chapter plan
+2. Read existing chapter files to understand what's already covered
+3. Draft the new chapter: Goal, Scope, Requirements, Technical Approach, Dependencies
+4. Run `scripts/add.sh` to create the file, then write the draft
+
+### `review` — PRD Completeness Check
+
+Before marking a chapter ready, verify it's truly executable:
+
+- Goal is specific and measurable
+- Requirements are concrete (not "improve performance" — write "p99 < 100ms")
+- Technical Approach has enough detail to start coding
+- Dependencies are named, not vague
+- Success Criteria are testable
+
+Point out vague or missing sections explicitly. Only recommend marking ready when all of the above are met.
+
+### `run` — Execution Handoff
+
+This replaces `/oh-my-claudecode:plan` for managed projects. Do NOT write to `.omc/plans/`.
+
+1. Run `scripts/run.sh` to locate and display the chapter PRD
+2. Read `_master.md` and the chapter PRD
+3. Read `_progress.md` if it exists — check for prior context on this chapter
+4. Create or update `_progress.md`: add/refresh the "현재 진행 중" section for this chapter
+5. Output an execution summary:
+   - What this chapter builds and why
+   - Key constraints and dependencies from prior chapters
+   - Concrete starting point
+   - Recommended OMC mode: `autopilot` (autonomous), `ralph` (with review loop), `team` (multi-agent)
+6. Tell the user: "실행 준비 완료. `/oh-my-claudecode:autopilot` (또는 ralph/team) 실행하세요. 세션 중 컨텍스트 복원이 필요하면 `_progress.md`를 프롬프트에 첨부하세요."
+
+### `update` — Progress Capture
+
+After an execution session, capture what happened:
+
+1. Ask: "이번 세션에서 무엇을 완료했나요? 어떤 결정을 내렸나요? 다음 세션 시작점은 어디인가요?"
+2. Update `_progress.md`:
+   - Move completed items to "완료된 것"
+   - Update "진행 중" and "다음 세션 시작점"
+   - Record new decisions in "결정 사항"
+3. If the chapter is fully done, prompt: "`/prd-manager status <project> <chapter> done` 실행할까요?"
+
+### `inbox` — Quick Capture
+
+Ask for a one-sentence description, then draft a minimal What/Why. Keep it fast — inbox is for capture, not planning.
 
 ## Status Flow
 
 ```
 planned → ready → in-progress → done
-                       ↓
-             /oh-my-claudecode:plan
-             → autopilot / ralph / team
 ```
 
-- **planned**: Initial state, still being written
-- **ready**: PRD complete, ready for execution
-- **in-progress**: Currently being executed
-- **done**: Completed
+- **planned**: PRD being written (use `add` + `review`)
+- **ready**: PRD complete, ready to execute (use `run`)
+- **in-progress**: Executing (use `update` to track progress)
+- **done**: Complete
+
+## Integration with OMC
+
+prd-manager **replaces** `/oh-my-claudecode:plan` for managed projects. The `run` command handles all execution preparation.
+
+```
+prd-manager
+    ├── _master.md + chapter-XX.md  (PRD — what to build)
+    └── _progress.md                (reality — what happened)
+              ↓
+    /prd-manager run
+              ↓
+    OMC Execution: autopilot / ralph / team
+              ↓
+    /prd-manager update
+              ↓
+    archive when done
+```
+
+`.omc/plans/` is not used by prd-manager — no conflicts.
 
 ## Templates
 
-### Master Plan (_master.md)
+### _master.md
 
 ```markdown
 # Project: {name}
@@ -109,22 +180,19 @@ planned → ready → in-progress → done
 
 | Chapter | Name | Status | Description |
 |---------|------|--------|-------------|
-| 01 | foundation | planned | [Brief description] |
-| 02 | core-engine | planned | [Brief description] |
-| 03 | api-layer | planned | [Brief description] |
+| 01 | {name} | planned | [Brief description] |
 
 ## Success Criteria
 
 - [ ] Criterion 1
 - [ ] Criterion 2
-- [ ] Criterion 3
 
 ## Notes
 
 -
 ```
 
-### Chapter PRD (chapter-XX-xxx.md)
+### chapter-XX-xxx.md
 
 ```markdown
 # Chapter: {name}
@@ -144,11 +212,9 @@ planned → ready → in-progress → done
 
 ### Functional
 - [ ] FR1: Description
-- [ ] FR2: Description
 
 ### Non-Functional
 - [ ] NFR1: Performance/security requirement
-- [ ] NFR2: Other requirement
 
 ## Technical Approach
 
@@ -164,20 +230,47 @@ planned → ready → in-progress → done
 - [ ] Criterion 1
 - [ ] Criterion 2
 
-## Execution Context
-
-[When ready to execute, this section provides context for autopilot/ralph]
-
-**Background:** [Brief project context]
-**This Chapter:** [What to build in this chapter]
-**Constraints:** [Important limitations or requirements]
-
 ## Notes
 
 -
 ```
 
-### Inbox (inbox/*.md)
+### _progress.md
+
+```markdown
+# Progress: {project-name}
+**Last Updated:** {timestamp}
+
+## Chapter 상태 요약
+
+| Chapter | Name | Status | Updated |
+|---------|------|--------|---------|
+| 01 | {name} | in-progress | {date} |
+
+## 현재 진행 중: chapter-01-{name}
+
+### 완료된 것
+-
+
+### 진행 중
+-
+
+### 다음 세션 시작점
+[여기서부터 시작하세요 — 구체적인 파일, 함수, 작업 단위]
+
+### 결정 사항
+- [X 대신 Y를 선택한 이유]
+
+### 블로커
+- 없음
+
+## 히스토리
+
+### chapter-01-{name} (done, {date})
+실제로 만들어진 것 요약 + 주요 결정
+```
+
+### _inbox/xxx.md
 
 ```markdown
 # Idea: {name}
@@ -199,80 +292,42 @@ planned → ready → in-progress → done
 ## Workflow Example
 
 ```bash
-# 1. Create project (starts with _master.md only)
+# 1. Create project (AI interview → drafts _master.md)
 /prd-manager new ba-platform
-# → Edit _master.md with vision, scope, success criteria
 
-# 2. Add first chapter when ready to plan it
+# 2. Add first chapter (AI drafts from master plan)
 /prd-manager add ba-platform foundation
-# → Edit chapter-01-foundation.md with detailed requirements
 
-# 3. Mark ready and execute
-/prd-manager status ba-platform foundation ready
+# 3. Review PRD before executing
+/prd-manager review ba-platform foundation
+
+# 4. Execute
 /prd-manager run ba-platform foundation
+# → _progress.md 생성, 실행 컨텍스트 요약 출력
 /oh-my-claudecode:autopilot  # or ralph / team
 
-# 4. Complete and add next chapter
+# 5. Capture session progress
+/prd-manager update ba-platform foundation
+
+# 6. Done → next chapter
 /prd-manager status ba-platform foundation done
-/prd-manager add ba-platform core-engine  # Add next chapter when needed
-# → Repeat cycle
-```
-
-**Incremental approach**: Don't plan all chapters upfront. Add each chapter as the previous one completes or when you're ready to detail it.
-
-## Integration with OMC
-
-```
-prd-manager (PRD Library)
-    └── _master.md + chapter-XX.md
-                  ↓
-        /prd-manager run
-                  ↓
-OMC Planning (/oh-my-claudecode:plan)
-    └── .omc/plans/
-                  ↓
-OMC Execution (autopilot / ralph / team)
-                  ↓
-Archive
+/prd-manager add ba-platform core-engine
 ```
 
 ## Best Practices
 
-1. **One project per major initiative**: Don't mix unrelated work
-2. **Chapters should be independently executable**: Each chapter = one Prometheus run
-3. **Write Prometheus Context section**: Makes handoff seamless
-4. **Use inbox for quick captures**: Promote to project when ready to plan
-5. **Archive when done**: Keep history, clean active view
-6. **Number chapters logically**: 01, 02, 03... to show execution order
-7. **Update master plan chapters table**: Keep status in sync
+1. **One project per major initiative** — don't mix unrelated work
+2. **Chapters = one OMC session** — keep them independently executable
+3. **Add chapters incrementally** — plan each chapter when ready, not all upfront
+4. **Attach `_progress.md` to resume** — gives Claude full execution context across sessions
+5. **Let AI draft, you refine** — `add` and `review` give you a strong starting point
+6. **Keep `_master.md` current** — update the chapters table as status changes
+7. **Archive when done** — clean active view, preserve history
 
-## Comparison: v2 vs v3
+## Version History
 
-| Aspect | v2.0 | v3.0 |
-|--------|------|------|
-| Name | TaskSuperstar | prd-manager |
-| Work Units | Phases | Chapters |
-| Folder | .tasksuperstar/ | .prologue/ |
-| Command | /tasksuperstar | /prd-manager |
-| Philosophy | Same | Same (improved naming) |
-
-## Status Management
-
-### Project Status
-- **planned**: Some chapters still being written
-- **ready**: All chapters ready for execution
-- **in-progress**: Currently executing
-- **done**: All chapters complete
-
-### Chapter Status
-- **planned**: PRD being written
-- **ready**: PRD complete, ready for execution
-- **in-progress**: Being executed
-- **done**: Completed
-
-Change status with:
-```bash
-/prd-manager status <project> <status>        # Project-level
-/prd-manager status <project> <chapter> <status> # Chapter-level
-```
-
+| Version | Folder | Key Change |
+|---------|--------|------------|
+| v2 (TaskSuperstar) | .tasksuperstar/ | Original |
+| v4 | .prologue/ | Renamed from TaskSuperstar |
+| v5 (current) | .prd-manager/ | AI workflows + `_progress.md` + folder rename |

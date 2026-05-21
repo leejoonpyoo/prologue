@@ -20,11 +20,11 @@ NC='\033[0m'
 
 if [ -z "$PROJECT_NAME" ]; then
     echo -e "${RED}Error: Project name required${NC}"
-    echo "Usage: /prologue new <project-name>"
+    echo "Usage: /prd-manager new <project-name>"
     exit 1
 fi
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROLOGUE_DIR="$PROJECT_ROOT/.prd-manager"
 
 # Create slug from project name
 PROJECT_SLUG=$(echo "$PROJECT_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')
@@ -55,7 +55,7 @@ sed -e "s/\${PROJECT_NAME}/$PROJECT_NAME/g" \
 echo -e "${GREEN}Created project: $PROJECT_FOLDER${NC}"
 echo "  $PROJECT_DIR/_master.md"
 echo ""
-echo "Next: /prologue add $PROJECT_SLUG <chapter-name>"
+echo "Next: /prd-manager add $PROJECT_SLUG <chapter-name>"
 
 # Update index
 "$SCRIPT_DIR/update-index.sh" "$PROJECT_ROOT"

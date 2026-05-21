@@ -15,11 +15,11 @@ NC='\033[0m'
 
 if [ -z "$NAME" ]; then
     echo -e "${RED}Error: Name required${NC}"
-    echo "Usage: /prologue inbox <name>"
+    echo "Usage: /prd-manager inbox <name>"
     exit 1
 fi
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROLOGUE_DIR="$PROJECT_ROOT/.prd-manager"
 INBOX_DIR="$PROLOGUE_DIR/_inbox"
 
 mkdir -p "$INBOX_DIR"

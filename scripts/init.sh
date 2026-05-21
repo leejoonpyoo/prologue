@@ -1,5 +1,5 @@
 #!/bin/bash
-# Initialize Prologue v3.0 folder structure
+# Initialize prd-manager v3.0 folder structure
 # Usage: ./init.sh [project-root]
 
 set -e
@@ -18,20 +18,20 @@ NC='\033[0m'
 
 cd "$PROJECT_ROOT"
 
-PROLOGUE_DIR=".prologue"
+PROLOGUE_DIR=".prd-manager"
 
 if [ -d "$PROLOGUE_DIR" ]; then
-    echo -e "${YELLOW}Prologue already initialized${NC}"
+    echo -e "${YELLOW}prd-manager already initialized${NC}"
     exit 0
 fi
 
 # Check for old TaskSuperstar structure
 if [ -d ".tasksuperstar" ]; then
-    echo -e "${YELLOW}TaskSuperstar v2 detected. Run /prologue migrate to upgrade.${NC}"
+    echo -e "${YELLOW}TaskSuperstar v2 detected. Run /prd-manager migrate to upgrade.${NC}"
     exit 0
 fi
 
-echo -e "${BLUE}Initializing Prologue v3.0...${NC}"
+echo -e "${BLUE}Initializing prd-manager v3.0...${NC}"
 
 # Create folder structure
 mkdir -p "$PROLOGUE_DIR/_inbox"
@@ -41,17 +41,17 @@ mkdir -p "$PROLOGUE_DIR/_archive"
 sed "s/\${TIMESTAMP}/$TIMESTAMP/g" "$TEMPLATE_DIR/index.md" > "$PROLOGUE_DIR/index.md"
 
 echo ""
-echo -e "${GREEN}Prologue v3.0 initialized!${NC}"
+echo -e "${GREEN}prd-manager v3.0 initialized!${NC}"
 echo ""
 echo "Structure:"
 echo "  $PROLOGUE_DIR/"
 echo "  ├── _inbox/       # Quick ideas"
 echo "  ├── _archive/     # Completed projects"
-echo "  ├── {projects}/   # Create with /prologue new <name>"
+echo "  ├── {projects}/   # Create with /prd-manager new <name>"
 echo "  └── index.md      # Master index"
 echo ""
 echo "Commands:"
-echo "  /prologue new <project>     # Create project"
-echo "  /prologue inbox <idea>      # Quick idea"
-echo "  /prologue list              # List all"
+echo "  /prd-manager new <project>     # Create project"
+echo "  /prd-manager inbox <idea>      # Quick idea"
+echo "  /prd-manager list              # List all"
 echo ""

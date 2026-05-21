@@ -9,7 +9,7 @@ TIMESTAMP=$(date "+%Y-%m-%d %H:%M")
 
 cd "$PROJECT_ROOT"
 
-PROLOGUE_DIR=".prologue"
+PROLOGUE_DIR=".prd-manager"
 INDEX_FILE="$PROLOGUE_DIR/index.md"
 
 if [ ! -d "$PROLOGUE_DIR" ]; then
@@ -47,7 +47,7 @@ INBOX_COUNT=$(count_files "$PROLOGUE_DIR/_inbox")
 
 # Generate index content
 {
-    echo "# Prologue Index"
+    echo "# prd-manager Index"
     echo ""
     echo "**Last Updated:** ${TIMESTAMP}"
     echo ""
@@ -56,7 +56,7 @@ INBOX_COUNT=$(count_files "$PROLOGUE_DIR/_inbox")
     echo "## Projects (${PROJECT_COUNT})"
     echo ""
     if [ "$PROJECT_COUNT" -eq 0 ]; then
-        echo "_No projects yet. Create one with \`/prologue new <project-name>\`_"
+        echo "_No projects yet. Create one with \`/prd-manager new <project-name>\`_"
     else
         # Sort projects by folder name (which includes date prefix)
         for project_dir in $(find "$PROLOGUE_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "_inbox" -not -name "_archive" 2>/dev/null | sort); do
@@ -72,7 +72,7 @@ INBOX_COUNT=$(count_files "$PROLOGUE_DIR/_inbox")
                     echo "### $PROJECT_FOLDER [$STATUS]"
                     echo ""
                     if [ "$CHAPTER_COUNT" -eq 0 ]; then
-                        echo "_No chapters yet. Add one with \`/prologue add $PROJECT_DISPLAY <chapter-name>\`_"
+                        echo "_No chapters yet. Add one with \`/prd-manager add $PROJECT_DISPLAY <chapter-name>\`_"
                     else
                         echo "| # | Chapter | Status |"
                         echo "|---|---------|--------|"
@@ -99,7 +99,7 @@ INBOX_COUNT=$(count_files "$PROLOGUE_DIR/_inbox")
     echo "## Inbox (${INBOX_COUNT})"
     echo ""
     if [ "$INBOX_COUNT" -eq 0 ]; then
-        echo "_No ideas yet. Create one with \`/prologue inbox <name>\`_"
+        echo "_No ideas yet. Create one with \`/prd-manager inbox <name>\`_"
     else
         for file in "$PROLOGUE_DIR/_inbox"/*.md; do
             if [ -f "$file" ]; then
@@ -135,5 +135,5 @@ INBOX_COUNT=$(count_files "$PROLOGUE_DIR/_inbox")
 
     echo "---"
     echo ""
-    echo "*This index is automatically updated by Prologue commands.*"
+    echo "*This index is automatically updated by prd-manager commands.*"
 } > "$INDEX_FILE"

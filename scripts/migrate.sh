@@ -1,5 +1,5 @@
 #!/bin/bash
-# Migrate TaskSuperstar v2 to Prologue v3
+# Migrate TaskSuperstar v2 to prd-manager v3
 # Also migrates old project naming to YYMMDD-NN_name format
 # Usage: ./migrate.sh [project-root]
 
@@ -19,7 +19,7 @@ NC='\033[0m'
 cd "$PROJECT_ROOT"
 
 OLD_DIR=".tasksuperstar"
-NEW_DIR=".prologue"
+NEW_DIR=".prd-manager"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -69,12 +69,12 @@ migrate_project_naming() {
 
 # Check for TaskSuperstar migration first
 if [ -d "$OLD_DIR" ] && [ ! -d "$NEW_DIR" ]; then
-    echo -e "${BLUE}Migrating TaskSuperstar v2 → Prologue v3${NC}"
+    echo -e "${BLUE}Migrating TaskSuperstar v2 → prd-manager v3${NC}"
     echo ""
 
     # Rename the directory
     mv "$OLD_DIR" "$NEW_DIR"
-    echo -e "${GREEN}Renamed .tasksuperstar/ → .prologue/${NC}"
+    echo -e "${GREEN}Renamed .tasksuperstar/ → .prd-manager/${NC}"
 
     # Rename all phase-*.md files to chapter-*.md
     echo ""
@@ -99,16 +99,16 @@ if [ -d "$OLD_DIR" ] && [ ! -d "$NEW_DIR" ]; then
         sed -i '' 's/phase:/chapter:/g' "$file" 2>/dev/null || true
         sed -i '' 's/Phases/Chapters/g' "$file" 2>/dev/null || true
 
-        # Update tasksuperstar → prologue
-        sed -i '' 's/tasksuperstar/prologue/g' "$file" 2>/dev/null || true
-        sed -i '' 's/TaskSuperstar/Prologue/g' "$file" 2>/dev/null || true
+        # Update tasksuperstar → prd-manager
+        sed -i '' 's/tasksuperstar/prd-manager/g' "$file" 2>/dev/null || true
+        sed -i '' 's/TaskSuperstar/prd-manager/g' "$file" 2>/dev/null || true
     done
 
     echo "  Updated references in all .md files"
     echo ""
 fi
 
-# Check if Prologue exists and migrate project naming
+# Check if prd-manager exists and migrate project naming
 if [ -d "$NEW_DIR" ]; then
     # Check if any projects need naming migration
     needs_migration=false
@@ -140,16 +140,16 @@ if [ -d "$NEW_DIR" ]; then
     echo -e "${GREEN}Migration complete!${NC}"
     echo ""
     echo "Changes applied:"
-    echo "  - .tasksuperstar/ → .prologue/ (if applicable)"
+    echo "  - .tasksuperstar/ → .prd-manager/ (if applicable)"
     echo "  - phase-*.md → chapter-*.md (if applicable)"
     echo "  - project-name/ → YYMMDD-NN_project-name/"
     echo "  - Updated all internal references"
     echo ""
     echo "Commands:"
-    echo "  /prologue list          # See all projects"
-    echo "  /prologue show <name>   # View project details"
+    echo "  /prd-manager list          # See all projects"
+    echo "  /prd-manager show <name>   # View project details"
 else
-    echo -e "${RED}No Prologue or TaskSuperstar directory found${NC}"
-    echo "Run /prologue init to create a new Prologue structure"
+    echo -e "${RED}No prd-manager or TaskSuperstar directory found${NC}"
+    echo "Run /prd-manager init to create a new prd-manager structure"
     exit 1
 fi

@@ -11,10 +11,10 @@ YELLOW='\033[1;33m'
 GRAY='\033[0;90m'
 NC='\033[0m'
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROLOGUE_DIR="$PROJECT_ROOT/.prd-manager"
 
 if [ ! -d "$PROLOGUE_DIR" ]; then
-    echo "Prologue not initialized. Run /prologue init"
+    echo "prd-manager not initialized. Run /prd-manager init"
     exit 1
 fi
 

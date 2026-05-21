@@ -11,11 +11,11 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 if [ -z "$PROJECT_INPUT" ]; then
-    echo "Usage: /prologue show <project> [chapter]"
+    echo "Usage: /prd-manager show <project> [chapter]"
     exit 1
 fi
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROLOGUE_DIR="$PROJECT_ROOT/.prd-manager"
 
 # Find project directory by name (supports both old and new naming)
 find_project_dir() {

@@ -17,11 +17,11 @@ NC='\033[0m'
 
 if [ -z "$PROJECT_INPUT" ] || [ -z "$CHAPTER_NAME" ]; then
     echo -e "${RED}Error: Project and chapter name required${NC}"
-    echo "Usage: /prologue add <project> <chapter-name>"
+    echo "Usage: /prd-manager add <project> <chapter-name>"
     exit 1
 fi
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROLOGUE_DIR="$PROJECT_ROOT/.prd-manager"
 
 # Find project directory by name (supports both old and new naming)
 find_project_dir() {

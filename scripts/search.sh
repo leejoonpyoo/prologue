@@ -10,14 +10,14 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 if [ -z "$QUERY" ]; then
-    echo "Usage: /prologue search <query>"
+    echo "Usage: /prd-manager search <query>"
     exit 1
 fi
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROLOGUE_DIR="$PROJECT_ROOT/.prd-manager"
 
 if [ ! -d "$PROLOGUE_DIR" ]; then
-    echo "Prologue not initialized"
+    echo "prd-manager not initialized"
     exit 1
 fi
 

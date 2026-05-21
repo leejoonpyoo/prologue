@@ -1,34 +1,33 @@
 # prd-manager
 
-A Claude Code skill for hierarchical PRD (Product Requirements Document) library management. Plan complex multi-chapter projects before execution.
+A Claude Code skill for hierarchical PRD (Product Requirements Document) library management. Plan complex multi-chapter projects, track execution progress, and hand off to OMC for execution.
 
 ## What is this?
 
-prd-manager v3.0 is a **hierarchical PRD library** that manages project master plans and chapter-based PRDs. prd-manager organizes planning artifacts before handing off to OMC for execution.
+prd-manager v5 manages projects as two distinct documents:
+
+- `_master.md` — what you **planned** to build (vision, scope, chapters)
+- `_progress.md` — what **actually happened** (execution state, decisions, resume point)
 
 ```
-[Project Master Plan] → [Chapter PRDs] → /oh-my-claudecode:plan → Execute
+Project → Chapters (PRDs) → Execute → Progress Tracking → Next Chapter
 ```
 
 ### Key Features
 
-- **Project-Based Organization**: Master plan + chapter PRDs
-- **Incremental Chapter Management**: Add chapters as you go, not all upfront
-- **Independent Work Units**: Each chapter = one executable OMC task
-- **Status Tracking**: planned → ready → in-progress → done
-- **OMC Integration**: Ready chapters feed directly into autopilot/ralph/team
-- **Inbox for Quick Ideas**: Capture standalone ideas outside projects
+- **AI-Assisted Planning**: Claude interviews you to draft `_master.md` and chapter PRDs
+- **Progress Tracking**: Per-project `_progress.md` for resuming sessions with full context
+- **Chapter-Based Organization**: Each chapter = one independently executable OMC session
+- **Incremental Planning**: Add chapters as you go, not all upfront
+- **OMC Integration**: `run` prepares execution context for autopilot/ralph/team — no `/oh-my-claudecode:plan` needed separately
+- **Inbox**: Quick idea capture outside of active projects
 
-### Key Concept: Chapters ≠ Maturity Levels
+### Key Concept: Plan vs Reality
 
-Chapters are **independent work units**, not refinement stages:
-- All chapters have the same level of detail
-- Chapter numbers = execution order/priority
-- Add chapters incrementally as you plan
+`_master.md` is the plan. `_progress.md` is the reality. The separation keeps planning clean while tracking what actually gets built, what decisions were made, and where to resume next session.
 
 ### Project Naming: YYMMDD-NN Format
 
-Projects are automatically organized with date-based naming:
 - Format: `YYMMDD-NN_project-name` (e.g., `260202-01_ba-platform`)
 - Sorted chronologically by default
 - Same-day projects get sequential index (01, 02, 03...)
@@ -36,113 +35,111 @@ Projects are automatically organized with date-based naming:
 
 ## Installation
 
-### Option 1: Copy to Claude skills folder
+### Option 1: Symlink (recommended for development)
 
 ```bash
-git clone https://github.com/leejoonpyoo/prd-manager.git
-cp -r prologue ~/.claude/skills/prd-manager
+git clone https://github.com/leejoonpyoo/prd-manager.git ~/Developer/claude/prd-manager
+ln -s ~/Developer/claude/prd-manager ~/.claude/skills/prd-manager
 ```
 
-### Option 2: Symlink (recommended for development)
+### Option 2: Copy
 
 ```bash
 git clone https://github.com/leejoonpyoo/prd-manager.git
-ln -s $(pwd)/prd-manager ~/.claude/skills/prd-manager
+cp -r prd-manager ~/.claude/skills/prd-manager
 ```
 
 ### Verify Installation
 
 ```bash
-# In Claude Code
 /prd-manager list
 ```
 
 ## Quick Start
 
-### 1. Create a Project
+### 1. Create a Project (AI Interview)
 
 ```bash
 /prd-manager new ba-platform
 ```
 
-This creates:
-- `.prologue/260202-01_ba-platform/_master.md` (with date-indexed folder)
-- Updates `.prologue/index.md`
+Claude interviews you and drafts `_master.md` with vision, scope, and proposed chapters.
 
-### 2. Add First Chapter (when ready to detail it)
+### 2. Add First Chapter (AI Draft)
 
 ```bash
 /prd-manager add ba-platform foundation
 ```
 
-This creates:
-- `.prologue/260202-01_ba-platform/chapter-01-foundation.md`
+Claude reads `_master.md` and drafts `chapter-01-foundation.md` with goal, requirements, and technical approach.
 
-**Note**: Reference projects by name (e.g., `ba-platform`), the system finds the full folder automatically.
-
-**Note**: Add chapters incrementally. Don't plan all chapters upfront.
-
-### 3. Write Your PRDs
-
-Edit the generated files with your planning details. Each chapter PRD includes an "Execution Context" section for easy handoff.
-
-### 4. Mark Chapter Ready
+### 3. Review PRD
 
 ```bash
-/prd-manager status ba-platform foundation ready
+/prd-manager review ba-platform foundation
 ```
 
-### 5. Execute with OMC
+Claude checks completeness and flags vague requirements before you commit to execution.
+
+### 4. Execute
 
 ```bash
 /prd-manager run ba-platform foundation
-# Displays the chapter PRD
-
+# → Creates _progress.md, outputs execution context summary
 /oh-my-claudecode:autopilot  # or ralph / team
-# Paste Execution Context and let OMC execute
 ```
 
-### 6. Mark Complete
+### 5. Capture Progress
+
+```bash
+/prd-manager update ba-platform foundation
+# → Claude updates _progress.md with session results
+```
+
+### 6. Mark Done and Continue
 
 ```bash
 /prd-manager status ba-platform foundation done
+/prd-manager add ba-platform core-engine
 ```
 
 ## Commands Reference
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `new <project>` | Create project with master plan | `/prd-manager new ba-platform` |
-| `add <project> <chapter>` | Add chapter to project | `/prd-manager add ba-platform auth` |
-| `status <project> [chapter] <status>` | Update status | `/prd-manager status ba-platform auth ready` |
-| `run <project> <chapter>` | Display chapter for execution | `/prd-manager run ba-platform auth` |
+| `new <project>` | AI interview → create project | `/prd-manager new ba-platform` |
+| `add <project> <chapter>` | AI draft chapter PRD | `/prd-manager add ba-platform auth` |
+| `review <project> <chapter>` | AI completeness check | `/prd-manager review ba-platform auth` |
+| `run <project> <chapter>` | Execution handoff + update `_progress.md` | `/prd-manager run ba-platform auth` |
+| `update <project> [chapter]` | AI updates progress doc | `/prd-manager update ba-platform auth` |
+| `status <project> [chapter] <status>` | Change status | `/prd-manager status ba-platform auth ready` |
 | `inbox <name>` | Quick idea capture | `/prd-manager inbox mobile-app` |
 | `list [project]` | List projects or chapters | `/prd-manager list` |
-| `show <project> [chapter]` | Show details | `/prd-manager show ba-platform auth` |
+| `show <project> [chapter]` | Show PRD content | `/prd-manager show ba-platform auth` |
 | `archive <project>` | Archive completed project | `/prd-manager archive ba-platform` |
 | `search <query>` | Search PRDs | `/prd-manager search authentication` |
 
 ## Folder Structure
 
 ```
-.prologue/
-├── _inbox/                          # Standalone ideas (system folder)
-├── _archive/                        # Completed projects (system folder)
-├── YYMMDD-NN_project-name/          # Date-indexed project folders
-│   ├── _master.md                   # Project master plan (vision, scope)
-│   └── chapter-XX-xxx.md            # Chapters added incrementally
-└── index.md                         # Master index
+.prd-manager/
+├── _inbox/                              # Standalone ideas
+├── _archive/                            # Completed projects
+├── YYMMDD-NN_project-name/
+│   ├── _master.md                       # Project vision & chapter registry
+│   ├── _progress.md                     # Execution state & resume context
+│   └── chapter-XX-xxx.md               # Chapter PRDs (added incrementally)
+└── index.md                             # Master index
 ```
 
 Example:
 ```
-.prologue/
+.prd-manager/
 ├── 260202-01_ba-platform/
 │   ├── _master.md
+│   ├── _progress.md
 │   ├── chapter-01-foundation.md
 │   └── chapter-02-api.md
-├── 260202-02_mobile-app/
-│   └── _master.md
 └── index.md
 ```
 
@@ -152,142 +149,66 @@ Example:
 planned → ready → in-progress → done
 ```
 
-- **planned**: Initial state, still being written
-- **ready**: PRD complete, ready for execution
-- **in-progress**: Currently being executed
-- **done**: Completed
-
-Both projects and individual chapters have status.
-
-## Templates
-
-### Master Plan
-
-Each project has a master plan (`_master.md`) with:
-- Vision and scope
-- Chapters table with status tracking
-- Success criteria
-- High-level notes
-
-### Chapter PRD
-
-Each chapter has its own PRD (`chapter-XX-name.md`) with:
-- Chapter goal and scope
-- Functional/non-functional requirements
-- Technical approach
-- Dependencies
-- **Execution Context** section for easy handoff
-
-### Inbox Ideas
-
-Quick standalone ideas in `inbox/` with minimal structure:
-- What: One sentence description
-- Why: Why this matters
-- Notes: Additional thoughts
+- **planned**: PRD being written (use `add` + `review`)
+- **ready**: PRD complete, ready to execute (use `run`)
+- **in-progress**: Executing (use `update` to track progress)
+- **done**: Complete
 
 ## Integration with OMC
 
-prd-manager sits at the beginning of the planning → execution pipeline:
+prd-manager **replaces** `/oh-my-claudecode:plan` for managed projects. The `run` command handles execution preparation — no need for omc:plan separately.
 
 ```
-prd-manager (PRD Library)
-    └── _master.md + chapter-XX.md
-                  ↓
-        /prd-manager run
-                  ↓
-OMC Planning (/oh-my-claudecode:plan)
-    └── .omc/plans/
-                  ↓
-OMC Execution (autopilot / ralph / team)
-                  ↓
-Archive
+prd-manager
+    ├── _master.md + chapter-XX.md  (PRD)
+    └── _progress.md                (execution state)
+              ↓
+    /prd-manager run
+              ↓
+    OMC: autopilot / ralph / team
+              ↓
+    /prd-manager update
+              ↓
+    archive when done
 ```
 
-## Example: Incremental Project Development
+`.omc/plans/` is not used by prd-manager — no conflicts.
+
+## Resuming Sessions
+
+Attach `_progress.md` to your prompt when picking up work across sessions:
 
 ```bash
-# 1. Start project with master plan only
-/prd-manager new ecommerce-platform
-# → Edit _master.md: vision, overall scope, success criteria
-
-# 2. Plan and execute first chapter
-/prd-manager add ecommerce-platform user-auth
-# → Edit chapter-01-user-auth.md with detailed requirements
-/prd-manager status ecommerce-platform user-auth ready
-/prd-manager run ecommerce-platform user-auth
-/oh-my-claudecode:autopilot  # or ralph / team
-
-# 3. Complete first chapter, add next
-/prd-manager status ecommerce-platform user-auth done
-/prd-manager add ecommerce-platform product-catalog
-# → Edit chapter-02-product-catalog.md
-# → Repeat cycle...
+# Claude has full context on what was built, decisions made, and where to resume
+/prd-manager run ba-platform core-engine
+# _progress.md path is shown in the output — attach it to your next prompt
 ```
-
-**Why incremental?** Requirements evolve. Earlier chapters inform later ones. Plan each chapter when you're ready to execute it.
-
-## Example: Quick Idea Capture
-
-```bash
-# Capture a quick idea
-/prd-manager inbox real-time-notifications
-
-# Later, promote to full project
-/prd-manager new real-time-notifications
-/prd-manager add real-time-notifications websocket-server
-/prd-manager add real-time-notifications client-library
-```
-
-## Best Practices
-
-1. **One project per major initiative**: Keep related work together
-2. **Chapters = executable chunks**: Each chapter should be independently executable with OMC
-3. **Write Execution Context**: Include a dedicated section for easy handoff
-4. **Use inbox liberally**: Capture ideas fast, organize later
-5. **Number chapters logically**: 01, 02, 03... shows execution order
-6. **Update master plan**: Keep the chapters table in sync
-7. **Archive when done**: Clean active view, preserve history
 
 ## Requirements
 
 - Claude Code CLI
-- (Optional) oh-my-claudecode plugin for OMC execution
-
-## Troubleshooting
-
-### Commands not recognized
-Ensure the skill is in `~/.claude/skills/prd-manager/` and `SKILL.md` is present.
-
-### Index not updating
-The index is auto-generated. If it's stale, check the hooks in SKILL.md are configured.
-
-### Chapter numbering issues
-Chapter numbers are auto-assigned based on creation order. Use leading zeros: `01`, `02`, etc.
-
-## Related Projects
-
-- [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) - OMC multi-agent orchestration layer
-
-## License
-
-MIT License
-
-## Contributing
-
-Contributions welcome! Please open issues or PRs on GitHub.
+- oh-my-claudecode plugin (for autopilot/ralph/team execution)
 
 ## Changelog
 
+### v5.0.0 (2026-05-21)
+- Added AI-assisted workflows: interview for `new`, drafting for `add`, review for `review`, update for `update`
+- Added `_progress.md` — project-level execution tracking for cross-session continuity
+- Renamed folder: `.prologue/` → `.prd-manager/`
+- Renamed repo: prologue → prd-manager
+- `run` now replaces `/oh-my-claudecode:plan` — no need to run omc:plan separately
+- Added `update` command for progress capture
+- Added `review` command for PRD completeness check
+- Removed Prometheus/Sisyphus legacy references
+
 ### v4.0.0 (2026-03-19)
-- Renamed from prd-manager to prd-manager
-- Removed Sisyphus/Prometheus legacy references
+- Renamed to prd-manager
 - Updated to OMC workflow (autopilot / ralph / team)
 
 ### v3.1.0 (2026-02-02)
 - Added date-indexed project naming: `YYMMDD-NN_project-name`
-- Projects sorted chronologically by default
 - Same-day projects get sequential index
 - Reference projects by name only (auto-lookup)
 
 ### v1.0.0 (2026-01-20)
-- Initial release with hierarchical PRD library structure
+- Initial release

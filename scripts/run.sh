@@ -1,5 +1,5 @@
 #!/bin/bash
-# Prepare chapter PRD for Prometheus execution
+# Locate and display chapter PRD for execution handoff
 # Usage: ./run.sh <project> <chapter>
 
 set -e
@@ -16,11 +16,11 @@ CHAPTER="$2"
 
 if [ -z "$PROJECT_INPUT" ] || [ -z "$CHAPTER" ]; then
     echo -e "${RED}Error: Project and chapter required${NC}"
-    echo "Usage: /prologue run <project> <chapter>"
+    echo "Usage: /prd-manager run <project> <chapter>"
     exit 1
 fi
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROLOGUE_DIR="$PROJECT_ROOT/.prd-manager"
 
 # Find project directory by name (supports both old and new naming)
 find_project_dir() {
@@ -71,20 +71,22 @@ fi
 STATUS=$(grep "^status:" "$CHAPTER_FILE" | head -1 | cut -d' ' -f2)
 if [ "$STATUS" != "ready" ]; then
     echo -e "${YELLOW}Warning: Chapter status is '$STATUS', not 'ready'${NC}"
-    echo "Consider: /prologue status $PROJECT_INPUT $CHAPTER ready"
+    echo "Consider: /prd-manager status $PROJECT_INPUT $CHAPTER ready"
     echo ""
 fi
 
-echo -e "${BLUE}=== Prometheus Context ===${NC}"
+echo -e "${BLUE}=== Execution Handoff ===${NC}"
 echo ""
 echo "Project: $PROJECT_FOLDER"
 echo "Chapter: $CHAPTER"
-echo "File: $CHAPTER_FILE"
+echo "PRD:     $CHAPTER_FILE"
+echo "Progress: $(dirname "$CHAPTER_FILE")/_progress.md"
 echo ""
-echo -e "${BLUE}--- PRD Content ---${NC}"
+echo -e "${BLUE}--- Chapter PRD ---${NC}"
 cat "$CHAPTER_FILE"
 echo ""
-echo -e "${BLUE}=======================${NC}"
+echo -e "${BLUE}=========================${NC}"
 echo ""
-echo -e "${GREEN}Ready for: /prometheus${NC}"
-echo "Copy the above content or reference the file path."
+echo -e "${GREEN}Ready to execute.${NC}"
+echo "Run: /oh-my-claudecode:autopilot (or ralph / team)"
+echo "To resume later, attach _progress.md to your prompt."

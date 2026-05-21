@@ -16,11 +16,11 @@ NC='\033[0m'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [ -z "$PROJECT_INPUT" ]; then
-    echo "Usage: /prologue archive <project>"
+    echo "Usage: /prd-manager archive <project>"
     exit 1
 fi
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROLOGUE_DIR="$PROJECT_ROOT/.prd-manager"
 ARCHIVE_DIR="$PROLOGUE_DIR/_archive"
 
 # Find project directory by name (supports both old and new naming)

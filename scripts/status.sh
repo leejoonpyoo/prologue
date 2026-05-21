@@ -12,7 +12,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-PROLOGUE_DIR="$PROJECT_ROOT/.prologue"
+PROLOGUE_DIR="$PROJECT_ROOT/.prd-manager"
 
 # Find project directory by name (supports both old and new naming)
 find_project_dir() {
@@ -50,7 +50,7 @@ elif [ $# -eq 3 ]; then
     NEW_STATUS="$3"
 else
     echo -e "${RED}Error: Invalid arguments${NC}"
-    echo "Usage: /prologue status <project> [chapter] <status>"
+    echo "Usage: /prd-manager status <project> [chapter] <status>"
     echo "Status: planned | ready | in-progress | done"
     exit 1
 fi
